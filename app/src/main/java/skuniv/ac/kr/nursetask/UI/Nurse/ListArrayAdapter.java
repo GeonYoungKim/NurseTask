@@ -123,7 +123,7 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
             chatRoomListFragment.realTimeupdate();
         }
         public void testmethod(){
-
+            
         }
     }
 
