@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "672316591869",
+    "firebase_url": "https://nursetask-5e9c5.firebaseio.com",
+    "project_id": "nursetask-5e9c5",
+    "storage_bucket": "nursetask-5e9c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672316591869:android:810287004e33f9d9",
+        "android_client_info": {
+          "package_name": "skuniv.ac.kr.nursetask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "672316591869-dph0vv4vm0rg6fthrle8bd3sr4ceahqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFDrhOhz2eDW3ZX-CbqaNPqYXVLkGFQAY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

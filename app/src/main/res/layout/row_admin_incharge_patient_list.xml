@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_default_profile"
+            android:id="@+id/inchargeImagebtn"
+            android:scaleType="fitXY"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="name"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:id="@+id/inchargePatientName"
+            />
+        <CheckBox
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text=""
+            android:id="@+id/InchargeSelectedCheckBox"
+            />
+    </LinearLayout>
+
+</LinearLayout>

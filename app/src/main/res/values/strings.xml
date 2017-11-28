@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NurseTask</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_admin_in_charge_patient_select">
+        AdminInChargePatientSelectActivity
+    </string>
+</resources>

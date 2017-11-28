@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="skuniv.ac.kr.nursetask.UI.Nurse.ChoiceRoomActivity">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_width="wrap_content"
+            android:layout_weight="1">
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="101호 "
+                android:id="@+id/room_101"
+                />
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="102호"
+                android:id="@+id/room_102"/>
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="103호"
+                android:id="@+id/room_103"/>
+        </TableRow>
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="201호"
+                android:id="@+id/room_201"/>
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="202호"
+                android:id="@+id/room_202"/>
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="203호"
+                android:id="@+id/room_203"/>
+        </TableRow>
+        <TableRow
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="301호"
+                android:id="@+id/room_301"/>
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="302호"
+                android:id="@+id/room_302"/>
+            <Button
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="303호"
+                android:id="@+id/room_303"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
