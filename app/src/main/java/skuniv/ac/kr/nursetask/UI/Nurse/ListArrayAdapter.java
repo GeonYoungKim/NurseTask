@@ -122,6 +122,9 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
             chatRoomListFragment = GetSet.getChatRoomListFragment();
             chatRoomListFragment.realTimeupdate();
         }
+        public void testmethod(){
+
+        }
     }
 
     private class JSONResultFatchInsertChatRoom extends JsonResult<Room> {
