@@ -7,21 +7,21 @@ import java.net.HttpURLConnection;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 
 /**
- * Created by gunyoungkim on 2017-11-23.
+ * Created by gunyoungkim on 2017-12-04.
  */
 
-public class UpdateToken extends SafeAsyncTask<String> {
+public class UpdateNurseRoomToken extends SafeAsyncTask<String> {
     String nurseid;
     String token;
 
-    public UpdateToken(String nurseid,String token){
+    public UpdateNurseRoomToken(String nurseid,String token){
         this.nurseid=nurseid;
         this.token=token;
     }
     @Override
     public String call() throws Exception {
 
-        String url="http://117.17.142.135:8080/controller/Nurse?a=update_token";
+        String url="http://117.17.142.135:8080/controller/Nurse?a=update_nurseroom_token";
         String query="nurseid="+this.nurseid+"&token="+this.token;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -44,10 +44,5 @@ public class UpdateToken extends SafeAsyncTask<String> {
     @Override
     protected void onSuccess(String str) throws Exception {
         super.onSuccess(str);
-        UpdateNurseRoomToken updateNurseRoomToken=new UpdateNurseRoomToken(this.nurseid,this.token);
-        updateNurseRoomToken.execute();
-
     }
-
-
 }
