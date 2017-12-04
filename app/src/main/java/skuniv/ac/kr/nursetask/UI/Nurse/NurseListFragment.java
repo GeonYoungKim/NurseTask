@@ -30,11 +30,22 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NurseListFragment extends ListFragment {
     private ListArrayAdapter nurseListArrayAdapter;
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         nurseListArrayAdapter=new ListArrayAdapter(getActivity());
         setListAdapter(nurseListArrayAdapter);
+        new FatchNurseListAsyncTask().execute();
+    }
+
+    @Nullable
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
         GetSet.setNurseListFragment(this);
         return inflater.inflate(R.layout.fragment_nurse_list,container,false);
     }
@@ -43,7 +54,7 @@ public class NurseListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         ListView lv=((ListView)getView().findViewById(android.R.id.list));
-        new FatchNurseListAsyncTask().execute();
+
     }
 
     public class FatchNurseListAsyncTask extends SafeAsyncTask<List<Nurse>> {

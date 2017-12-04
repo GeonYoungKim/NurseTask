@@ -35,8 +35,16 @@ public class AdminRoomsListArrayAdapter extends ArrayAdapter<Room> {
             view = layoutInflater.inflate(R.layout.row_room_list, parent, false);
         }
         Room room=getItem(position);
-        ((TextView)view.findViewById(R.id.roomName)).setText(room.getRoomname());
-        ((TextView)view.findViewById(R.id.roomCount)).setText(room.getCount()+"명");
+        if(room.getFlag()==0){
+            view = layoutInflater.inflate(R.layout.row_room_list, parent, false);
+            ((TextView)view.findViewById(R.id.roomName)).setText(room.getRoomname());
+            ((TextView)view.findViewById(R.id.roomCount)).setText(room.getCount()+"명");
+        }else{
+            view = layoutInflater.inflate(R.layout.row_room_flag_list, parent, false);
+            ((TextView)view.findViewById(R.id.roomName)).setText(room.getRoomname());
+            ((TextView)view.findViewById(R.id.roomCount)).setText(room.getCount()+"명");
+        }
+
         return view;
     }
     public  void add(List<Room> list){

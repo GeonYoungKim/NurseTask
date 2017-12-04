@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 password=inputpassword.getText()+"";
                 new LoginNurse().execute();
 
-                inputid.setText(null);
-                inputpassword.setText(null);
+                inputid.setText("");
+                inputpassword.setText("");
             }
         });
     }
@@ -178,81 +178,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /*public class SendTask extends AsyncTask<String,String,String> {
-        @Override
-        protected String doInBackground(String... params) {
-            if(mWriter==null){
-                return "Can not Send";
-            }
-            try{
-                PrintWriter out = new PrintWriter(mWriter,true);
-                out.println(params[0]);
-            }catch (Exception e){
-                Log.d("tag","Data send eroor");
-                return "Send Fail";
-            }
-            return "Send Succeed";
-        }
-    }*/
-    /*private class ConnectTask extends AsyncTask<String, String,String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                int nPort = 9304;
-                mSock = new Socket("117.17.142.135", nPort);
-                mWriter = new BufferedWriter(new OutputStreamWriter(mSock.getOutputStream()));
-
-                mReader = new BufferedReader(new InputStreamReader(mSock.getInputStream()));
-                mCheckRecv = new CheckRecv();
-                mCheckRecv.start();
-            } catch (Exception e) {
-                Log.d("tag", "Socket connect error.");
-                return "Connect Fail";
-            }
-            return "Connect Succeed";
-        }
-    }*/
-    /*public class CheckRecv extends Thread{
-
-        public void run(){
-            try{
-                while(true){
-                    mRecvData=mReader.readLine();
-                    mReceiver.sendEmptyMessage(0);
-                }
-            }catch(Exception e){
-                Log.d("tag","Receive error");
-            }
-        }
-    }*/
-    /*Handler mReceiver=new Handler(){
-        public void handleMessage(Message msg){
-            Toast.makeText(getApplication(),mRecvData,Toast.LENGTH_SHORT).show();
-            if(mRecvData!=null){
-                chatActivity=GetSet.getChatActivity();
-                if(chatActivity!=null){
-                    chatActivity.new FatchAdminChatListAsyncTask().execute();
-                }
-                String[] my_send=mRecvData.split("-");
-                if(!(my_send[1].equals(nurseid))){
-                    AlarmNotificationReceiver.content=mRecvData;
-                    AlarmManager manager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
-                    alarmintent=new Intent(MainActivity.this,AlarmNotificationReceiver.class);
-                    pendingIntent=PendingIntent.getBroadcast(MainActivity.this,0,alarmintent,0);
-                    manager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime()+3,pendingIntent);
-                    chatRoomListFragment= GetSet.getChatRoomListFragment();
-                    adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
-                    if(chatRoomListFragment!=null){
-                        chatRoomListFragment.realTimeupdate();
-                    }
-                    if(adminChatRoomListFragment!=null){
-                        adminChatRoomListFragment.realTimeupdate();
-                    }
-                }
-
-            }
-        }
-    };*/
 
     private void storeNurse(Nurse nurse){
         SharedPreferences mSharedPreferences=getSharedPreferences("Text_number_store",MODE_PRIVATE);

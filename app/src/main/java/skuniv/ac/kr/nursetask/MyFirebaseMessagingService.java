@@ -10,6 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,16 +26,19 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminChatRoomListFragment;
 
 import skuniv.ac.kr.nursetask.UI.Admin.AdminNursesListFragment;
+import skuniv.ac.kr.nursetask.UI.Admin.AdminRoomsListArrayAdapter;
 import skuniv.ac.kr.nursetask.UI.Admin.AlarmNotificationReceiver;
 import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.ChatRoomListFragment;
+import skuniv.ac.kr.nursetask.UI.Nurse.InviteActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.MainActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.NurseListFragment;
 
@@ -47,15 +51,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG="MyFirebaseMsgService";
     Intent alarmintent;
     PendingIntent pendingIntent;
-
     ChatActivity chatActivity;
     NurseListFragment nurseListFragment;
     AdminNursesListFragment adminNursesListFragment;
-    public ChatRoomListFragment chatRoomListFragment;
-    public AdminChatRoomListFragment adminChatRoomListFragment;
+    AdminChatRoomListFragment adminChatRoomListFragment;
+    ChatRoomListFragment chatRoomListFragment;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(TAG,"From:"+remoteMessage.getFrom());
+
+        Log.d(TAG,"From:"+remoteMessage.getMessageId());
         Log.d(TAG,"Who:"+remoteMessage.getNotification().getClickAction());
         if(remoteMessage.getData().size()>0){
             Log.d(TAG,"Message data"+remoteMessage.getData());
@@ -63,20 +68,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(remoteMessage.getNotification()!=null){
             Log.d(TAG,"Message body:"+remoteMessage.getNotification().getBody());
             chatActivity= GetSet.getChatActivity();
-            chatRoomListFragment= GetSet.getChatRoomListFragment();
             adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
-
-            try{
-                chatActivity.new FatchAdminChatListAsyncTask().execute();
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
+            chatRoomListFragment=GetSet.getChatRoomListFragment();
             try{
                 adminChatRoomListFragment.realTimeupdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }try{
                 chatRoomListFragment.realTimeupdate();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+            try{
+                chatActivity.new FatchAdminChatListAsyncTask().execute();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
@@ -92,7 +96,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }else{
                     sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
                 }
-
                 adminNursesListFragment=GetSet.getAdminNursesListFragment();
                 nurseListFragment=GetSet.getNurseListFragment();
                 try{
@@ -107,9 +110,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }else {
                 if(remoteMessage.getNotification().getClickAction().equals(getNurse().getNurseid())){
-                    System.out.println("내가 보낸 메시지");
+
                 }else {
-                    sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+                    String sp[]=remoteMessage.getNotification().getBody().split("-");
+                    sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
+                    getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
+                    getRoomFlag.execute();
                 }
 
             }
@@ -205,6 +211,53 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         long btime = curTime.getTimeInMillis();
         long triggerTime = btime;
         return triggerTime;
+    }
+
+   private class getRoomFlag extends SafeAsyncTask<String> {
+        String roomno;
+       String nurseid;
+       public getRoomFlag(String roomno,String nurseid){
+           this.roomno=roomno;
+           this.nurseid=nurseid;
+       }
+        @Override
+        public String call() throws Exception {
+            String url="http://117.17.142.135:8080/controller/Nurse?a=getRoomFlag";
+            String query="roomno="+roomno+"&nurseid="+nurseid;
+            HttpRequest request=HttpRequest.post(url);
+            request.accept( HttpRequest.CONTENT_TYPE_JSON );
+            request.connectTimeout( 1000 );
+            request.readTimeout( 3000 );
+            request.send(query);
+            int responseCode = request.code();
+            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
+                    /* 에러 처리 */
+                System.out.println("---------------------ERROR");
+                return null;
+            }
+
+            return null;
+        }
+        @Override
+        protected void onException(Exception e) throws RuntimeException {
+            super.onException(e);
+            System.out.println("----------->exception: "+e);
+        }
+        @Override
+        protected void onSuccess(String room) throws Exception {
+            super.onSuccess(room);
+            try{
+                adminChatRoomListFragment.realTimeupdate();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }try{
+                chatRoomListFragment.realTimeupdate();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
 }

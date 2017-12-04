@@ -28,6 +28,13 @@
                 android:layout_marginRight="30dp"
                 android:gravity="center_vertical"
                 android:text="roomcount" />
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:background="@color/flag_red"
+                />
 
         </LinearLayout>
 

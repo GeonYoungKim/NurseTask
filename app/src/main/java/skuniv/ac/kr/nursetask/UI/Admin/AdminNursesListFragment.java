@@ -24,11 +24,22 @@ import skuniv.ac.kr.nursetask.UI.Nurse.NurseListFragment;
 
 public class AdminNursesListFragment extends ListFragment {
     private AdminListArrayAdapter nurseListArrayAdapter;
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         nurseListArrayAdapter=new AdminListArrayAdapter(getActivity());
         setListAdapter(nurseListArrayAdapter);
+        new FatchAdminNurseListAsyncTask().execute();
+    }
+
+    @Nullable
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
         GetSet.setAdminNursesListFragment(this);
         return inflater.inflate(R.layout.fragment_nurse_list,container,false);
     }
@@ -37,7 +48,7 @@ public class AdminNursesListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         ListView lv=((ListView)getView().findViewById(android.R.id.list));
 
-        new FatchAdminNurseListAsyncTask().execute();
+
     }
     public void realTimeupdate(){
         FragmentTransaction ft=getFragmentManager().beginTransaction();

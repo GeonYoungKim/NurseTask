@@ -95,9 +95,6 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         protected void onSuccess(String str) throws Exception {
             super.onSuccess(str);
             finish();
-
-
-
         }
     }
     public void dialog_start_date_picker(View view){

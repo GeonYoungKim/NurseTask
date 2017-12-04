@@ -35,6 +35,7 @@ import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.ChatProvider;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
+import skuniv.ac.kr.nursetask.UI.Admin.AdminChatRoomListFragment;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminNursesListFragment;
 import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 
@@ -55,6 +56,8 @@ public class ChatActivity extends ListActivity {
     String content;
     String realContent;
     static String rooms_id;
+    AdminChatRoomListFragment adminChatRoomListFragment;
+    ChatRoomListFragment chatRoomListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,9 @@ public class ChatActivity extends ListActivity {
                 new InsertChat().execute();
             }
         });
+        getRoomFlag getRoomFlag=new getRoomFlag(roomno+"",my_nurseid);
+        getRoomFlag.execute();
+
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -187,7 +193,7 @@ public class ChatActivity extends ListActivity {
             super.onSuccess(str);
             new FatchAdminChatListAsyncTask().execute();
 
-            Fcm fcm=new Fcm(my_nursename,realContent,rooms_id,my_nurseid);
+            Fcm fcm=new Fcm(my_nursename,roomno+"-"+realContent,rooms_id,my_nurseid);
             fcm.start();
         }
     }
@@ -227,8 +233,55 @@ public class ChatActivity extends ListActivity {
                     rooms_id+=","+nurseRoom.getToken();
                 }
             }
-            System.out.println("gggggggggggggggggggggggggggggggggggggggggggg"+rooms_id);
         }
     }
     private class JSONResultFatchListNurseRoom extends JsonResult<List<NurseRoom>> {}
+
+    private class getRoomFlag extends SafeAsyncTask<String> {
+        String roomno;
+        String nurseid;
+        public getRoomFlag(String roomno,String nurseid){
+            this.roomno=roomno;
+            this.nurseid=nurseid;
+        }
+        @Override
+        public String call() throws Exception {
+            String url="http://117.17.142.135:8080/controller/Nurse?a=getRoomFlag2";
+            String query="roomno="+roomno+"&nurseid="+nurseid;
+            HttpRequest request=HttpRequest.post(url);
+            request.accept( HttpRequest.CONTENT_TYPE_JSON );
+            request.connectTimeout( 1000 );
+            request.readTimeout( 3000 );
+            request.send(query);
+            int responseCode = request.code();
+            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
+                    /* 에러 처리 */
+                System.out.println("---------------------ERROR");
+                return null;
+            }
+            return null;
+        }
+        @Override
+        protected void onException(Exception e) throws RuntimeException {
+            super.onException(e);
+            System.out.println("----------->exception: "+e);
+        }
+        @Override
+        protected void onSuccess(String room) throws Exception {
+            super.onSuccess(room);
+            adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
+            chatRoomListFragment=GetSet.getChatRoomListFragment();
+            try{
+                adminChatRoomListFragment.realTimeupdate();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }try{
+                chatRoomListFragment.realTimeupdate();
+            }catch (NullPointerException e){
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 }

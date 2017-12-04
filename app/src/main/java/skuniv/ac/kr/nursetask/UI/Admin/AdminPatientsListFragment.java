@@ -27,12 +27,23 @@ public class AdminPatientsListFragment extends ListFragment {
 
 
     private AdminPatientListArrayAdapter adminPatientListArrayAdapter;
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        adminPatientListArrayAdapter=new AdminPatientListArrayAdapter(getActivity());
+        setListAdapter(adminPatientListArrayAdapter);
+        new FatchAdminPatientListAsyncTask().execute();
+    }
+
     @Nullable
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         GetSet.setAdminPatientsListFragment(this);
-        adminPatientListArrayAdapter=new AdminPatientListArrayAdapter(getActivity());
-        setListAdapter(adminPatientListArrayAdapter);
+
         return inflater.inflate(R.layout.fragment_admin_patients_list,container,false);
     }
     @Override
@@ -47,7 +58,6 @@ public class AdminPatientsListFragment extends ListFragment {
             }
         });
 
-        new FatchAdminPatientListAsyncTask().execute();
     }
 
     @Override

@@ -24,4 +24,6 @@
 
     <!-- 투명 -->
     <color name="transparent">#00000000</color>
+    <color name="flag_red">#FF0000</color>
+
 </resources>
