@@ -53,15 +53,12 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
         Intent intent=getIntent();
         nurse=(Nurse)intent.getExtras().get("nurse");
         System.out.println(nurse.getToken());
-
         i=1;
         today_schedule_map=new HashMap<EditText, EditText>();
-
 
         container=(LinearLayout) findViewById(R.id.today_parent_layout);
         time_et=(EditText)findViewById(R.id.today_schedule_time_1);
         content_et=(EditText)findViewById(R.id.today_schedule_content_1);
-
         today_schedule_map.put(time_et,content_et);
 
         findViewById(R.id.today_schedule_addbtn).setOnClickListener(new View.OnClickListener() {
@@ -80,7 +77,6 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
                 time_edit.setLayoutParams(time_params);
                 time_edit.setHint("18:00");
 
-
                 LinearLayout.LayoutParams content_param=(LinearLayout.LayoutParams)content_et.getLayoutParams();
 
                 EditText content_edit=new EditText(AdminTodayScheduleActivity.this);
@@ -91,7 +87,6 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
                 //부모 뷰에 추가
                 container.addView(linearLayout);
                 today_schedule_map.put(time_edit,content_edit);
-
             }
         });
 
@@ -144,7 +139,6 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
 
             Fcm fcm=new Fcm("update_schedule-"+nurse.getNurseid(),"confirm_schedule",nurse.getToken()+"","");
             fcm.start();
-
         }
     }
 }

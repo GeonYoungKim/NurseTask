@@ -78,7 +78,7 @@ public class AdminListArrayAdapter extends ArrayAdapter<Nurse> {
             public void onClick(View v) {
                 //담당 환자 선택해서 정해줌
                 Intent intent=new Intent(getContext(),AdminInChargePatientSelectActivity.class);
-                intent.putExtra("NurseId",nurse.getNurseid());
+                intent.putExtra("Nurse", (Parcelable) nurse);
                 getContext().startActivity(intent);
 
             }

@@ -43,6 +43,7 @@ import skuniv.ac.kr.nursetask.UI.Admin.AdminChatRoomListFragment;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminListArrayAdapter;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminMainActivity;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminNursesListFragment;
+import skuniv.ac.kr.nursetask.UI.Admin.AdminPatientListArrayAdapter;
 import skuniv.ac.kr.nursetask.UI.Admin.AlarmNotificationReceiver;
 import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 import skuniv.ac.kr.nursetask.UI.Admin.UpdateToken;
@@ -280,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
         }
         ChatActivity.my_nurseid=nurseid;
         ChatActivity.my_nursename=nurse.getName();
+        AdminPatientListArrayAdapter.nurse=nurse;
         Toast.makeText(getApplicationContext(),nurse.getName()+"",Toast.LENGTH_SHORT).show();
         Intent intent=new Intent(MainActivity.this,AdminMainActivity.class);
         intent.putExtra("nurseid",nurseid);

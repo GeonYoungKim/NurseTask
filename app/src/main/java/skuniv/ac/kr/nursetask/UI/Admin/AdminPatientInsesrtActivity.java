@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
@@ -28,10 +30,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
+import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Nurse.AsyncResponse;
 import skuniv.ac.kr.nursetask.UI.Nurse.MemberShipActivity;
@@ -48,6 +54,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
     private String imgPath="";
     ImageView imageView;
     Uri photoUri, albumUri;
+    String nurse_list_token="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +78,6 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 getPatientInsertContents=new String[]{PatientInsertContents[0].getText()+"",PatientInsertContents[1].getText()+"",PatientInsertContents[2].getText()+"",
                         PatientInsertContents[3].getText()+"",PatientInsertContents[4].getText()+"",PatientInsertContents[5].getText()+"",PatientInsertContents[6].getText()+"",
                         PatientInsertContents[7].getText()+""};
-
 
                 new InsertPatient().execute();
             }
@@ -121,6 +127,8 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"환자추가에 성공하셨습니다."+patient.getName()+"님",Toast.LENGTH_SHORT).show();
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED, returnIntent);
+                new FatchNurseListAsyncTask().execute();
+
                 finish();
 
             }
@@ -194,7 +202,6 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         intent.setType("image/*");
         intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
         startActivityForResult(intent,REQUEST_TAKE_ALBUM);
-
     }
 
     public void cropImage(){
@@ -256,5 +263,38 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         } catch (Exception e){
 
         }
+    }
+
+    public class FatchNurseListAsyncTask extends SafeAsyncTask<List<Nurse>> {
+        @Override
+        public List<Nurse> call() throws Exception {
+            List<Nurse> Nurses=new NurseProvider().FatchNurseList();
+            return Nurses;
+        }
+        @Override
+        protected void onException(Exception e) throws RuntimeException {
+            super.onException(e);
+            Log.e("FatchUserListAsyncTask","arror"+e);
+        }
+        @Override
+        protected void onSuccess(List<Nurse> Nurses) throws Exception {
+            super.onSuccess(Nurses);
+            for(Nurse nurse:Nurses){
+                if(nurse_list_token.equals("")){
+                    nurse_list_token+=nurse.getToken();
+                }else{
+                    nurse_list_token+=","+nurse.getToken();
+                }
+            }
+            Fcm fcm=new Fcm(getNurse().getName(),"Patient_insert - > ",nurse_list_token,getNurse().getNurseid());
+            fcm.start();
+        }
+    }
+    private Nurse getNurse(){
+        Gson gson=new Gson();
+        SharedPreferences mSharedPreferences=getSharedPreferences("Text_number_store",MODE_PRIVATE);
+        String json=mSharedPreferences.getString("nurse","");
+        Nurse nurse =gson.fromJson(json,Nurse.class);
+        return nurse;
     }
 }

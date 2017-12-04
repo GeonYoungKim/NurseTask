@@ -21,17 +21,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
+import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.Core.provider.PatientProvider;
 import skuniv.ac.kr.nursetask.R;
 
 public class AdminInChargePatientSelectActivity extends ListActivity {
+
     Map<String,CheckBox> patientsCheckMap;
     String checkedPatient;
-    String nurseId;
+    Nurse nurse;
     List<Patient> patients;
     ListView lv;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +45,14 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         patientsCheckMap=new HashMap<String,CheckBox>();
         checkedPatient="";
         Intent intent=getIntent();
-        nurseId=(String)intent.getExtras().get("NurseId");
+        nurse=(Nurse) intent.getExtras().get("Nurse");
         new FatchAdminPatientListAsyncTask().execute();
         lv= (ListView) findViewById(android.R.id.list);
 
-        findViewById(R.id.OKInChargePatientBtn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.OKInChargePatientBtn).setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 for( String key : patientsCheckMap.keySet() ){
                     //System.out.println( String.format("환자 아이디 : %s, 해당 체크 되었는지 : %s", key, patientsCheckMap.get(key).isChecked()) );
                     if(patientsCheckMap.get(key).isChecked()==true){
@@ -57,7 +63,6 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
                         }
                     }
                 }
-                //System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"+checkedPatient);
                 new InsertInChargePatient().execute();
             }
         });
@@ -67,7 +72,7 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         public String call() throws Exception {
 
             String url="http://117.17.142.135:8080/controller/Nurse?a=insertInChargePatient";
-            String query="nurseId="+nurseId+"&patientcode="+checkedPatient;
+            String query="nurseId="+nurse.getNurseid()+"&patientcode="+checkedPatient;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -91,9 +96,11 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         protected void onSuccess(String result) throws Exception {
             super.onSuccess(result);
             if("good".equals(result)){
-                Toast.makeText(getApplicationContext(),nurseId+"님에게 담당환자를 부여하였습니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),nurse.getNurseid()+"님에게 담당환자를 부여하였습니다.",Toast.LENGTH_SHORT).show();
                 finish();
             }
+            Fcm fcm=new Fcm("admin","incharge_patient_update",nurse.getToken()+"","");
+            fcm.start();
         }
     }
 

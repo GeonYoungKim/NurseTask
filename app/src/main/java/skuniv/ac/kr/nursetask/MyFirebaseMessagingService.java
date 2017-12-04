@@ -142,7 +142,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
     private class GetScheduleNurse extends SafeAsyncTask<Nurse> {
         private long triggerTime=0;
-        private long triggerTime2=0;
         private String id;
         public GetScheduleNurse(String id){
             this.id=id;

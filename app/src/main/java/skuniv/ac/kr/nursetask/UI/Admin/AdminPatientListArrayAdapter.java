@@ -2,10 +2,12 @@ package skuniv.ac.kr.nursetask.UI.Admin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +16,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.net.HttpURLConnection;
 import java.util.List;
 
+import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
+import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.Core.provider.back;
 import skuniv.ac.kr.nursetask.R;
 
@@ -32,6 +38,9 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
     public AdminPatientsListFragment adminPatientsListFragment;
     String imageUrl = "http://117.17.142.135:8080/img/";
     Bitmap bmImg;
+    String nurse_list_token="";
+    Patient fcm_patinet;
+    public static Nurse nurse;
 
     private LayoutInflater layoutInflater;
     public AdminPatientListArrayAdapter(@NonNull Context context) {
@@ -62,6 +71,7 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         view.findViewById(R.id.deletePatientBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fcm_patinet=patient;
                 DeletePatient deletePatient=new DeletePatient(patient.getPatientcode());
                 deletePatient.execute();
             }
@@ -110,11 +120,35 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         @Override
         protected void onSuccess(String result) throws Exception {
             super.onSuccess(result);
-
-
             adminPatientsListFragment=GetSet.getAdminPatientsListFragment();
             adminPatientsListFragment.realTimeupdate();
+            new FatchNurseListAsyncTask().execute();
+
         }
     }
-
+    public class FatchNurseListAsyncTask extends SafeAsyncTask<List<Nurse>> {
+        @Override
+        public List<Nurse> call() throws Exception {
+            List<Nurse> Nurses=new NurseProvider().FatchNurseList();
+            return Nurses;
+        }
+        @Override
+        protected void onException(Exception e) throws RuntimeException {
+            super.onException(e);
+            Log.e("FatchUserListAsyncTask","arror"+e);
+        }
+        @Override
+        protected void onSuccess(List<Nurse> Nurses) throws Exception {
+            super.onSuccess(Nurses);
+            for(Nurse nurse:Nurses){
+                if(nurse_list_token.equals("")){
+                    nurse_list_token+=nurse.getToken();
+                }else{
+                    nurse_list_token+=","+nurse.getToken();
+                }
+            }
+            Fcm fcm=new Fcm(nurse.getNurseid(),"Patient_delete - > "+fcm_patinet.getName(),nurse_list_token,nurse.getName());
+            fcm.start();
+        }
+    }
 }

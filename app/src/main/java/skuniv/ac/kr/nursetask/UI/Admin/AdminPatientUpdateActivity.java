@@ -1,20 +1,27 @@
 package skuniv.ac.kr.nursetask.UI.Admin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.net.HttpURLConnection;
+import java.util.List;
 
+import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
+import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
 
 public class AdminPatientUpdateActivity extends AppCompatActivity {
@@ -22,12 +29,14 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
     Patient patient;
     EditText[] PatientUpdateContents;
     String[] getPatientUpdateContents;
+    String nurse_list_token="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_patient_update);
 
         Intent intent=getIntent();
+
         patient=(Patient)intent.getExtras().get("patient");
         PatientUpdateContents=new EditText[]{(EditText)findViewById(R.id.patientUpdate_patientName),(EditText)findViewById(R.id.patientUpdate_patientBirth),
                 (EditText)findViewById(R.id.patientUpdate_patientSex),(EditText)findViewById(R.id.patientUpdate_patientDisease),(EditText)findViewById(R.id.patientUpdate_patientPeriod),
@@ -94,9 +103,44 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"환자수정에 성공하셨습니다.",Toast.LENGTH_SHORT).show();
                 adminPatientsListFragment=GetSet.getAdminPatientsListFragment();
                 adminPatientsListFragment.realTimeupdate();
+
+                new FatchNurseListAsyncTask().execute();
                 finish();
             }
         }
     }
     private class JSONResultFatchUpdatePatient extends JsonResult<Patient> {}
+
+    public class FatchNurseListAsyncTask extends SafeAsyncTask<List<Nurse>> {
+        @Override
+        public List<Nurse> call() throws Exception {
+            List<Nurse> Nurses=new NurseProvider().FatchNurseList();
+            return Nurses;
+        }
+        @Override
+        protected void onException(Exception e) throws RuntimeException {
+            super.onException(e);
+            Log.e("FatchUserListAsyncTask","arror"+e);
+        }
+        @Override
+        protected void onSuccess(List<Nurse> Nurses) throws Exception {
+            super.onSuccess(Nurses);
+            for(Nurse nurse:Nurses){
+                if(nurse_list_token.equals("")){
+                    nurse_list_token+=nurse.getToken();
+                }else{
+                    nurse_list_token+=","+nurse.getToken();
+                }
+            }
+            Fcm fcm=new Fcm(getNurse().getName(),"Patient_update - > "+patient.getName(),nurse_list_token,getNurse().getNurseid());
+            fcm.start();
+        }
+    }
+    private Nurse getNurse(){
+        Gson gson=new Gson();
+        SharedPreferences mSharedPreferences=getSharedPreferences("Text_number_store",MODE_PRIVATE);
+        String json=mSharedPreferences.getString("nurse","");
+        Nurse nurse =gson.fromJson(json,Nurse.class);
+        return nurse;
+    }
 }
