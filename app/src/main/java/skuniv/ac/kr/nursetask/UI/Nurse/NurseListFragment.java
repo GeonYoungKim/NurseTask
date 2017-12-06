@@ -10,13 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
@@ -31,6 +35,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class NurseListFragment extends ListFragment {
     private ListArrayAdapter nurseListArrayAdapter;
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -38,11 +43,7 @@ public class NurseListFragment extends ListFragment {
         setListAdapter(nurseListArrayAdapter);
         new FatchNurseListAsyncTask().execute();
     }
-
     @Nullable
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
@@ -73,6 +74,7 @@ public class NurseListFragment extends ListFragment {
         @Override
         protected void onSuccess(List<Nurse> Nurses) throws Exception {
             super.onSuccess(Nurses);
+
             System.out.println(Nurses);
             nurseListArrayAdapter.add(Nurses);
             getView().findViewById(R.id.progress).setVisibility(View.GONE);

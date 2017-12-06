@@ -59,7 +59,7 @@ public class ChatRoomListFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d("create adapter","adapter");
         adminRoomsListArrayAdapter=new AdminRoomsListArrayAdapter(getActivity());
-        new FatchAdminRoomListAsyncTask().execute();
+
 
     }
 
@@ -86,7 +86,7 @@ public class ChatRoomListFragment extends ListFragment {
                 getContext().startActivity(intent);
             }
         });
-
+        new FatchAdminRoomListAsyncTask().execute();
     }
     public void realTimeupdate(){
         FragmentTransaction ft=getFragmentManager().beginTransaction();

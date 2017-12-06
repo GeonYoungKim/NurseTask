@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import skuniv.ac.kr.nursetask.Core.domain.Chat;
@@ -193,8 +194,10 @@ public class ChatActivity extends ListActivity {
             super.onSuccess(str);
             new FatchAdminChatListAsyncTask().execute();
 
-            Fcm fcm=new Fcm(my_nursename,roomno+"-"+realContent,rooms_id,my_nurseid);
+
+            Fcm fcm=new Fcm(my_nursename,(roomno+"-"+realContent),rooms_id,my_nurseid);
             fcm.start();
+            rooms_id="";
         }
     }
     private class getNurseRoom extends SafeAsyncTask<List<NurseRoom>> {

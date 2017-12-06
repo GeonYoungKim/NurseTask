@@ -43,6 +43,8 @@ public class AdminRoomsListArrayAdapter extends ArrayAdapter<Room> {
             view = layoutInflater.inflate(R.layout.row_room_flag_list, parent, false);
             ((TextView)view.findViewById(R.id.roomName)).setText(room.getRoomname());
             ((TextView)view.findViewById(R.id.roomCount)).setText(room.getCount()+"명");
+            ((TextView)view.findViewById(R.id.update_flag)).setText(room.getFlag()+"");
+
         }
 
         return view;

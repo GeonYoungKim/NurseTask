@@ -1,5 +1,6 @@
 package skuniv.ac.kr.nursetask.UI.Admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -8,14 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
+import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.NurseListFragment;
 
 /**
@@ -34,9 +38,6 @@ public class AdminNursesListFragment extends ListFragment {
     }
 
     @Nullable
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
@@ -46,8 +47,8 @@ public class AdminNursesListFragment extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ListView lv=((ListView)getView().findViewById(android.R.id.list));
 
+        ListView lv=((ListView)getView().findViewById(android.R.id.list));
 
     }
     public void realTimeupdate(){
@@ -71,9 +72,12 @@ public class AdminNursesListFragment extends ListFragment {
         @Override
         protected void onSuccess(List<Nurse> Nurses) throws Exception {
             super.onSuccess(Nurses);
+
             System.out.println(Nurses);
             nurseListArrayAdapter.add(Nurses);
             getView().findViewById(R.id.progress).setVisibility(View.GONE);
+
+
         }
     }
 

@@ -1,13 +1,16 @@
 package skuniv.ac.kr.nursetask.Core.network;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import skuniv.ac.kr.nursetask.UI.Admin.AdminTodayScheduleActivity;
 
@@ -29,12 +32,20 @@ public class Fcm {
     }
     public void start(){
 
+
         new AsyncTask<Void, Void, String>() {
+
 
             @Override
             protected String doInBackground(Void... params) {
-                String result = "";
 
+                String result = "";
+//                try {
+//            msg=URLEncoder.encode(msg,"UTF-8");
+//            Log.d("msg",msg);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
                 // 1. 내 서버정보 세팅
                 String server_url = "http://117.17.142.135:8080/controller/fcm";
                 // 2. 서버로 전송할 POST message 세팅

@@ -56,7 +56,7 @@ public class AdminChatRoomListFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d("create adapter", "adapter");
         adminRoomsListArrayAdapter = new AdminRoomsListArrayAdapter(getActivity());
-        new FatchAdminRoomListAsyncTask().execute();
+
 
         ////////////////////////////////////////////////////////////////////
 //토큰값을 받기위해 브로드캐스트 리시버 설
@@ -94,7 +94,7 @@ public class AdminChatRoomListFragment extends ListFragment {
                 getContext().startActivity(intent);
             }
         });
-
+        new FatchAdminRoomListAsyncTask().execute();
 
     }
 
@@ -115,11 +115,8 @@ public class AdminChatRoomListFragment extends ListFragment {
         @Override
         protected void onSuccess(List<Room> Rooms) throws Exception {
             super.onSuccess(Rooms);
-
-
             for (Room room : Rooms) {
                 roommap.put(room.getRoomno(), room);
-
                 System.out.println(room);
             }
             adminRoomsListArrayAdapter.add(Rooms);

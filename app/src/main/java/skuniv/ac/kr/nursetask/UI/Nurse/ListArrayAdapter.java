@@ -3,6 +3,7 @@ package skuniv.ac.kr.nursetask.UI.Nurse;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -58,8 +59,16 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
         final Nurse nurse = getItem(position);
         ((TextView) view.findViewById(R.id.nurseName)).setText(nurse.getName());
         ImageView bmImage = (ImageView) view.findViewById(R.id.imagebtn);
-        new back(bmImage,bmImg).execute(imageUrl + nurse.getImage() + "");
 
+        new back(bmImage,bmImg).execute(imageUrl + nurse.getImage() + "");
+        bmImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getContext(),InformationActivity.class);
+                intent.putExtra("nurse", (Parcelable) nurse);
+                getContext().startActivity(intent);
+            }
+        });
         view.findViewById(R.id.chatbtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

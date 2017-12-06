@@ -1,5 +1,6 @@
 package skuniv.ac.kr.nursetask;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,10 +21,14 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Room;
@@ -60,6 +65,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
+
+        Log.d(TAG,"Message body:"+remoteMessage.getNotification().getBody());
+        Log.d(TAG,"Message body:"+remoteMessage.getNotification().getBody());
+
+        ActivityManager am = (ActivityManager)getApplicationContext().getSystemService(ACTIVITY_SERVICE);
+        List< ActivityManager.RunningTaskInfo > taskInfo = am.getRunningTasks(1);
         Log.d(TAG,"From:"+remoteMessage.getMessageId());
         Log.d(TAG,"Who:"+remoteMessage.getNotification().getClickAction());
         if(remoteMessage.getData().size()>0){
@@ -84,7 +95,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
-
             if(remoteMessage.getNotification().getBody().equals("confirm_schedule")){
                 sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
                 String[] schedules=remoteMessage.getNotification().getTitle().split("-");
@@ -110,12 +120,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }else {
                 if(remoteMessage.getNotification().getClickAction().equals(getNurse().getNurseid())){
-
+                    Log.d("my message","내가 보낸 메세지");
                 }else {
-                    String sp[]=remoteMessage.getNotification().getBody().split("-");
-                    sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
-                    getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
-                    getRoomFlag.execute();
+                    Log.d("emulator","emulator");
+                    if(".UI.Nurse.ChatActivity".equals(taskInfo.get(0).topActivity.getShortClassName())){
+                        Log.d("chatActivity","현재 채팅창임.");
+                    }else{
+                        String sp[]=remoteMessage.getNotification().getBody().split("-");
+                        sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
+                        getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
+                        getRoomFlag.execute();
+                    }
+
                 }
 
             }
@@ -129,6 +145,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return nurse;
     }
     private void sendNotification(String sender,String body) {
+
+
         Intent intent=new Intent(this,MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -235,7 +253,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 System.out.println("---------------------ERROR");
                 return null;
             }
-
             return null;
         }
         @Override
@@ -255,9 +272,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
-
         }
-
     }
-
 }

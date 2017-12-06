@@ -6,9 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -53,8 +53,6 @@
 
         <receiver android:name=".UI.Admin.AlarmNotificationReceiver" />
 
-
-
         <activity android:name=".UI.Admin.AdminScheduleChoiceActivity" />
         <activity android:name=".UI.Admin.AdminTodayScheduleActivity">
             <intent-filter>
@@ -66,13 +64,12 @@
         <activity android:name=".UI.Nurse.InchargePatientShowActivity" />
         <activity android:name=".UI.Nurse.TodayScheduleShowActivity" />
         <activity android:name=".UI.Admin.AdminLongTermScheduleInputActivity" />
-        <activity android:name=".UI.Nurse.LongTermScheduleShowActivity"></activity>
+        <activity android:name=".UI.Nurse.LongTermScheduleShowActivity" />
 
         <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
         </service>
         <service android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
@@ -80,6 +77,7 @@
             </intent-filter>
         </service>
 
+        <activity android:name=".UI.Nurse.InformationActivity"></activity>
     </application>
 
 </manifest>

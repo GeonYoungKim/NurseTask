@@ -55,6 +55,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
     ImageView imageView;
     Uri photoUri, albumUri;
     String nurse_list_token="";
+    Patient insert_patient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,10 +126,10 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"환자추가에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getApplicationContext(),"환자추가에 성공하셨습니다."+patient.getName()+"님",Toast.LENGTH_SHORT).show();
+                insert_patient=patient;
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED, returnIntent);
                 new FatchNurseListAsyncTask().execute();
-
                 finish();
 
             }
@@ -286,7 +287,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                     nurse_list_token+=","+nurse.getToken();
                 }
             }
-            Fcm fcm=new Fcm(getNurse().getName(),"Patient_insert - > ",nurse_list_token,getNurse().getNurseid());
+            Fcm fcm=new Fcm(getNurse().getName(),"Patient_insert - > "+insert_patient.getRoom()+"환자",nurse_list_token,getNurse().getNurseid());
             fcm.start();
         }
     }

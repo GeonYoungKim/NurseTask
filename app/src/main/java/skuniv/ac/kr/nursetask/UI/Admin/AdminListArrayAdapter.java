@@ -26,6 +26,7 @@ import skuniv.ac.kr.nursetask.Core.provider.back;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
+import skuniv.ac.kr.nursetask.UI.Nurse.InformationActivity;
 
 /**
  * Created by gunyoungkim on 2017-09-07.
@@ -60,6 +61,15 @@ public class AdminListArrayAdapter extends ArrayAdapter<Nurse> {
         ((TextView)view.findViewById(R.id.nurseName)).setText(nurse.getName());
         ImageView bmImage = (ImageView) view.findViewById(R.id.imagebtn);
         new back(bmImage,bmImg).execute(imageUrl + nurse.getImage() + "");
+
+        bmImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getContext(),InformationActivity.class);
+                intent.putExtra("nurse", (Parcelable) nurse);
+                getContext().startActivity(intent);
+            }
+        });
 
         view.findViewById(R.id.chatbtn).setOnClickListener(new View.OnClickListener() {
             @Override
