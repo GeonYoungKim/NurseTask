@@ -84,7 +84,7 @@ public class MemberShipActivity extends AppCompatActivity {
         @Override
         public Nurse call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=insertNurse";
+            String url="http://117.17.142.135:8080/nurse/insertNurse";
             String query="id="+getMemberShipContents[0]+"&password="+getMemberShipContents[1]+"&name="+getMemberShipContents[2]+
                     "&birth="+getMemberShipContents[3]+"&phone="+getMemberShipContents[4]+"&address="+getMemberShipContents[5]+"&image="+imageFileName;
             HttpRequest request=HttpRequest.post(url);
@@ -236,7 +236,7 @@ public class MemberShipActivity extends AppCompatActivity {
         }
     }
     public void uploadFile(String filePath){
-        String url = "http://117.17.142.135:8080/controller/";
+        String url = "http://117.17.142.135:8080/nurse/photo";
         try {
             UploadFile uploadFile = new UploadFile(MemberShipActivity.this, new AsyncResponse() {
                 @Override

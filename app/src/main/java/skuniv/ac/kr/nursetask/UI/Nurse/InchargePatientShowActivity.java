@@ -83,7 +83,7 @@ public class InchargePatientShowActivity extends ListActivity {
 
         @Override
         public List<Patient> call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=incharge_patient_show";
+            String url="http://117.17.142.135:8080/nurse/incharge_patient_show";
             String query="nurseid="+nurseid;
 
             HttpRequest request=HttpRequest.post(url);

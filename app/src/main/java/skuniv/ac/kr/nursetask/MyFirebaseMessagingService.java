@@ -172,7 +172,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         @Override
         public Nurse call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=get_schedule_nurse";
+            String url="http://117.17.142.135:8080/nurse/today_schedule_show";
             String query="id="+id;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -240,7 +240,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
        }
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=getRoomFlag";
+            String url="http://117.17.142.135:8080/nurse/getRoomFlag";
             String query="roomno="+roomno+"&nurseid="+nurseid;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );

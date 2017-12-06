@@ -19,7 +19,7 @@ public class RoomProvider {
         this.nurseid=nurseid;
     }
     public List<Room> FatchRoomList(){
-        String url="http://117.17.142.135:8080/controller/Nurse?a=roomList";
+        String url="http://117.17.142.135:8080/nurse/roomList";
         String query="nurseid="+nurseid;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );

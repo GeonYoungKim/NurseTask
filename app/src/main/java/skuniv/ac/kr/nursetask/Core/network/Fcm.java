@@ -47,7 +47,7 @@ public class Fcm {
 //            e.printStackTrace();
 //        }
                 // 1. 내 서버정보 세팅
-                String server_url = "http://117.17.142.135:8080/controller/fcm";
+                String server_url = "http://117.17.142.135:8080/nurse/fcm";
                 // 2. 서버로 전송할 POST message 세팅
                 String post_data = "to_token=" + token + "&msg=" + msg + "&sender=" + sender+ "&action="+action;
 

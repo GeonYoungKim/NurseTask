@@ -71,7 +71,7 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=insertInChargePatient";
+            String url="http://117.17.142.135:8080/nurse/insertInChargePatient";
             String query="nurseId="+nurse.getNurseid()+"&patientcode="+checkedPatient;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );

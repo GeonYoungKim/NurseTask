@@ -18,7 +18,7 @@ public class ChatProvider {
         this.roomno=roomno;
     }
     public List<Chat> FatchChatList(){
-        String url="http://117.17.142.135:8080/controller/Nurse?a=chatList";
+        String url="http://117.17.142.135:8080/nurse/chatList";
         String query="roomno="+roomno;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );

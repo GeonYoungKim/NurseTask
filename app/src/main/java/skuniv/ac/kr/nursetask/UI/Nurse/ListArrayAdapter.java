@@ -96,7 +96,7 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
 
         @Override
         public Room call() throws Exception {
-            String url = "http://117.17.142.135:8080/controller/Nurse?a=inserChatRoom";
+            String url = "http://117.17.142.135:8080/nurse/inserChatRoom";
             String query = "data1=" + data1 + "&data2=" + data2 + "&roomname=" + roomname + "&count=" + count;
 
             HttpRequest request = HttpRequest.post(url);

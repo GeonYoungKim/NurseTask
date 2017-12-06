@@ -169,7 +169,7 @@ public class ChatActivity extends ListActivity {
     private class InsertChat extends SafeAsyncTask<String> {
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=insertChat";
+            String url="http://117.17.142.135:8080/nurse/insertChat";
             String query="roomno="+roomno+"&nurseid2="+my_nurseid+"&chatcontent="+realContent;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -203,7 +203,7 @@ public class ChatActivity extends ListActivity {
     private class getNurseRoom extends SafeAsyncTask<List<NurseRoom>> {
         @Override
         public List<NurseRoom> call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=getNurseRoom";
+            String url="http://117.17.142.135:8080/nurse/getNurseRoom";
             String query="roomno="+roomno;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -249,7 +249,7 @@ public class ChatActivity extends ListActivity {
         }
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=getRoomFlag2";
+            String url="http://117.17.142.135:8080/nurse/getRoomFlag2";
             String query="roomno="+roomno+"&nurseid="+nurseid;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );

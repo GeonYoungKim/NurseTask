@@ -70,7 +70,7 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=long_term_schedule_insert";
+            String url="http://117.17.142.135:8080/nurse/long_term_schedule_insert";
             String query="startday="+start_btn.getText()+"&endday="+end_btn.getText()+"&content="+content_et.getText()+"&nurseid="+nurseid;
 
             HttpRequest request=HttpRequest.post(url);

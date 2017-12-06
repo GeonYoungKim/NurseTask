@@ -111,7 +111,7 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=today_schedule_update";
+            String url="http://117.17.142.135:8080/nurse/today_schedule_update";
             String query="today_schedule_result="+today_schedule_result+"&nurseid="+nurse.getNurseid();
 
             HttpRequest request=HttpRequest.post(url);

@@ -95,7 +95,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         @Override
         public Patient call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=insertPatient";
+            String url="http://117.17.142.135:8080/nurse/insertPatient";
             String query="patientcode="+getPatientInsertContents[0]+"&name="+getPatientInsertContents[1]+"&birth="+getPatientInsertContents[2]+
                     "&sex="+getPatientInsertContents[3]+"&disease="+getPatientInsertContents[4]+"&period="+getPatientInsertContents[5]+"&note="+getPatientInsertContents[6]
                     +"&room="+getPatientInsertContents[7]+"&image="+imageFileName;
@@ -250,7 +250,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         }
     }
     public void uploadFile(String filePath){
-        String url = "http://117.17.142.135:8080/controller/";
+        String url = "http://117.17.142.135:8080/nurse/photo";
         try {
             UploadFile uploadFile = new UploadFile(AdminPatientInsesrtActivity.this, new AsyncResponse() {
                 @Override

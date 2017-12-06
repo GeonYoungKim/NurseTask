@@ -21,7 +21,7 @@ public class UpdateToken extends SafeAsyncTask<String> {
     @Override
     public String call() throws Exception {
 
-        String url="http://117.17.142.135:8080/controller/Nurse?a=update_token";
+        String url="http://117.17.142.135:8080/nurse/update_token";
         String query="nurseid="+this.nurseid+"&token="+this.token;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );

@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
             System.out.println("---------------------------------"+id);
             System.out.println("---------------------------------"+password);
-            String url="http://117.17.142.135:8080/controller/Nurse?a=login";
+            String url="http://117.17.142.135:8080/nurse/login";
             String query="id="+id+"&password="+password;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );

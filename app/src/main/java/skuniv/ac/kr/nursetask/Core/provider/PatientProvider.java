@@ -15,7 +15,7 @@ import skuniv.ac.kr.nursetask.Core.domain.Patient;
 
 public class PatientProvider {
     public List<Patient> FatchPatientList(){
-        String url="http://117.17.142.135:8080/controller/Nurse?a=patientList";
+        String url="http://117.17.142.135:8080/nurse/patientList";
         HttpRequest request=HttpRequest.get(url);
         request.contentType( HttpRequest.CONTENT_TYPE_JSON );
         request.accept( HttpRequest.CONTENT_TYPE_JSON );

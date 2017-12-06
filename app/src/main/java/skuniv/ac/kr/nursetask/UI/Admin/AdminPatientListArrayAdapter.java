@@ -95,7 +95,7 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=deletePatient";
+            String url="http://117.17.142.135:8080/nurse/deletePatient";
             String query="patientcode="+patientcode;
 
             HttpRequest request=HttpRequest.post(url);

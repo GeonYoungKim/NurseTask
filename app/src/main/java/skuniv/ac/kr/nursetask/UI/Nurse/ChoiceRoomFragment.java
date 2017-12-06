@@ -88,7 +88,7 @@ public class ChoiceRoomFragment extends Fragment implements View.OnClickListener
 
         @Override
         public List<Patient> call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=roomPatientList";
+            String url="http://117.17.142.135:8080/nurse/roomPatientList";
             String query="room="+room;
             System.out.println("**************************************"+room);
             HttpRequest request=HttpRequest.post(url);

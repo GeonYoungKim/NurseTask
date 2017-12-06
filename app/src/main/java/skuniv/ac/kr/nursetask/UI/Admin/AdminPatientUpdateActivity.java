@@ -68,7 +68,7 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
         @Override
         public Patient call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=updatePatient";
+            String url="http://117.17.142.135:8080/nurse/updatePatient";
             String query="patientcode="+patient.getPatientcode()+"&name="+getPatientUpdateContents[0]+"&birth="+getPatientUpdateContents[1]+
                     "&sex="+getPatientUpdateContents[2]+"&disease="+getPatientUpdateContents[3]+"&period="+getPatientUpdateContents[4]+"&note="+getPatientUpdateContents[5]
                     +"&room="+getPatientUpdateContents[6];

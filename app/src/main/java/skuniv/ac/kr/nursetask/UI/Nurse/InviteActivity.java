@@ -87,7 +87,7 @@ public class InviteActivity extends ListActivity {
     private class UpdateRoom extends SafeAsyncTask<String> {
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/controller/Nurse?a=updateRoom";
+            String url="http://117.17.142.135:8080/nurse/updateRoom";
             String query="roomno="+roomno+"&roomname="+checkedNurse+"&count="+count+"&strNurseId="+checkedNurseId;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -131,7 +131,7 @@ public class InviteActivity extends ListActivity {
         @Override
         public Room call() throws Exception {
 
-            String url="http://117.17.142.135:8080/controller/Nurse?a=getRoom2";
+            String url="http://117.17.142.135:8080/nurse/getRoom2";
             String query="roomno="+roomno;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
