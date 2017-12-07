@@ -14,10 +14,10 @@ import skuniv.ac.kr.nursetask.UI.Nurse.NurseListFragment;
 
 public class AdminMainTabsConfig {
     public static AdminMainTabsConfig.TabInfo[] TABINFOS = {
-            new AdminMainTabsConfig.TabInfo( "사용자", R.drawable.ic_online, R.drawable.ic_online, AdminNursesListFragment.class, null),
-            new AdminMainTabsConfig.TabInfo( "알람1", R.drawable.ic_online, R.drawable.ic_online, AdminChatRoomListFragment.class, null),
-            new AdminMainTabsConfig.TabInfo( "알람2", R.drawable.ic_online, R.drawable.ic_online, AdminPatientsListFragment.class, null),
-            new AdminMainTabsConfig.TabInfo( "알람2", R.drawable.ic_online, R.drawable.ic_online, ChoiceRoomFragment.class, null)
+            new AdminMainTabsConfig.TabInfo( "사용자", R.drawable.nurse_tab_1, R.drawable.nurse_tab_1, AdminNursesListFragment.class, null),
+            new AdminMainTabsConfig.TabInfo( "알람1", R.drawable.chatroom, R.drawable.chatroom, AdminChatRoomListFragment.class, null),
+            new AdminMainTabsConfig.TabInfo( "알람2", R.drawable.patient, R.drawable.patient, AdminPatientsListFragment.class, null),
+            new AdminMainTabsConfig.TabInfo( "알람2", R.drawable.bed, R.drawable.bed, ChoiceRoomFragment.class, null)
     };
 
     public static final class TABINDEX {

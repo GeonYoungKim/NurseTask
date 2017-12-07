@@ -7,9 +7,9 @@ import skuniv.ac.kr.nursetask.R;
 public final class MainTabsConfig {
 
     private static final TabInfo[] TABINFOS = {
-            new TabInfo( "사용자", R.drawable.ic_online, R.drawable.ic_online, NurseListFragment.class, null),
-            new TabInfo( "알람1", R.drawable.ic_online, R.drawable.ic_online, ChatRoomListFragment.class, null),
-            new TabInfo( "알람2", R.drawable.ic_online, R.drawable.ic_online, ChoiceRoomFragment.class, null)
+            new TabInfo( "사용자", R.drawable.nurse_tab_1, R.drawable.nurse_tab_1, NurseListFragment.class, null),
+            new TabInfo( "알람1", R.drawable.chatroom, R.drawable.chatroom, ChatRoomListFragment.class, null),
+            new TabInfo( "알람2", R.drawable.bed, R.drawable.bed, ChoiceRoomFragment.class, null)
     };
 
     public static final class TABINDEX {

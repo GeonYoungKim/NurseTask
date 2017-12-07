@@ -13,7 +13,7 @@
     android:divider="@null"
     android:tag="uni_tag"
     android:background="#f9f9f9"
-    android:padding="10dp">
+    >
     </ListView>
 
 

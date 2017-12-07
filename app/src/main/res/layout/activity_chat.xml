@@ -34,12 +34,17 @@
         <Button
             android:id="@+id/submitChat"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="2dp"
+            android:textColor="#FFFFFF"
+            android:background="#04B486"
             android:text="전송" />
         <Button
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:textColor="#FFFFFF"
+            android:background="#04B486"
             android:id="@+id/inviteBtn"
             android:text="초대"
             />

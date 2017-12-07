@@ -23,6 +23,8 @@
             android:text="back"
             android:layout_gravity="bottom|center"
             android:layout_margin="30dp"
+            android:textColor="#FFFFFF"
+            android:background="#04B486"
             android:id="@+id/incharge_patient_show_back_btn"/>
     </FrameLayout>
 

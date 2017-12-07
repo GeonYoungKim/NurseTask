@@ -41,6 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="내용"
+            android:layout_marginLeft="2dp"
+            android:background="#04B486"
+            android:textColor="#FFFFFF"
             android:id="@+id/long_term_schedule_content_btn"
             android:textStyle="bold"
             android:textSize="10dp" />

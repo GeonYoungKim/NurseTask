@@ -2,29 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
         <item
-            android:id="@+id/myImage"
-            android:title="" />
-        <item
             android:id="@+id/charge_Patient_List"
-            android:icon="@drawable/ic_online"
+            android:icon="@drawable/patient_list_3"
             android:title="담당 환자 목록"
 
             />
         <item
             android:id="@+id/today_Work"
-            android:icon="@drawable/ic_online"
+            android:icon="@drawable/schedule"
             android:title="오늘 스케쥴"
 
             />
         <item
             android:id="@+id/long_term_Work"
-            android:icon="@drawable/ic_online"
+            android:icon="@drawable/schedule"
             android:title="장기 스케쥴"
 
             />
         <item
             android:id="@+id/logout"
-            android:icon="@drawable/ic_online"
+            android:icon="@drawable/logout_4"
             android:title="로그아웃"
 
             />

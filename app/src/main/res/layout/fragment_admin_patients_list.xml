@@ -22,9 +22,10 @@
         <Button
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/ic_add_circle_outline_black_36dp"
+            android:background="@drawable/add"
             android:layout_gravity="bottom|right"
             android:layout_margin="30dp"
+
             android:id="@+id/insertPatientBtn"/>
     </FrameLayout>
 

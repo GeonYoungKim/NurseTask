@@ -20,6 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Code"
+                android:textColor="#04B486"
                 android:textSize="20dp"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
@@ -43,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name"
-
+                android:textColor="#04B486"
                 android:textSize="20dp"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
@@ -66,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Birth"
-
+                android:textColor="#04B486"
                 android:textSize="20dp"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
@@ -88,7 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sex"
-
+                android:textColor="#04B486"
                 android:textSize="20dp"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
@@ -110,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Disease"
-
+                android:textColor="#04B486"
                 android:textSize="20dp"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
@@ -133,6 +134,7 @@
                 android:layout_height="wrap_content"
                 android:text="Period"
                 android:textSize="20dp"
+                android:textColor="#04B486"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
                 />
@@ -154,6 +156,7 @@
                 android:layout_height="wrap_content"
                 android:text="Note"
                 android:textSize="20dp"
+                android:textColor="#04B486"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
                 />
@@ -175,6 +178,7 @@
                 android:layout_height="wrap_content"
                 android:text="Room"
                 android:textSize="20dp"
+                android:textColor="#04B486"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
                 />
@@ -196,7 +200,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Image"
-
+                android:textColor="#04B486"
                 android:textSize="20dp"
                 android:layout_weight="3"
                 android:layout_margin="5dp"
@@ -208,7 +212,7 @@
                 android:layout_height="200dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="#ff00ff" />
+                android:background="#A9E2F3" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -222,11 +226,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Insert"
+                android:textColor="#FFFFFF"
+                android:background="#04B486"
+                android:layout_marginRight="3dp"
                 android:id="@+id/patientInsert_insertBtn"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="cancel"
+                android:textColor="#FFFFFF"
+                android:background="#04B486"
                 android:id="@+id/patientInsert_cancelBtn"
                 />
         </LinearLayout>
