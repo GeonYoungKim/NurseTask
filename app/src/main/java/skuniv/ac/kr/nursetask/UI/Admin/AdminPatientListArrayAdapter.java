@@ -148,7 +148,7 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
                 }
             }
             Fcm fcm=new Fcm(nurse.getNurseid(),"Patient_delete - > "+fcm_patinet.getName(),nurse_list_token,nurse.getName());
-            fcm.start();
+            fcm.execute();
         }
     }
 }

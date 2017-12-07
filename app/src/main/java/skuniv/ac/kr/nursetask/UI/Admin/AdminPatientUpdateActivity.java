@@ -133,7 +133,7 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
                 }
             }
             Fcm fcm=new Fcm(getNurse().getName(),"Patient_update - > "+patient.getName(),nurse_list_token,getNurse().getNurseid());
-            fcm.start();
+            fcm.execute();
         }
     }
     private Nurse getNurse(){

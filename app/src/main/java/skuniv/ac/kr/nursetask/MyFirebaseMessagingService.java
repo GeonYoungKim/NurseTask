@@ -81,6 +81,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             chatActivity= GetSet.getChatActivity();
             adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
             chatRoomListFragment=GetSet.getChatRoomListFragment();
+
+            String msg=remoteMessage.getNotification().getBody();
+            try {
+                msg=URLDecoder.decode(msg,"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
             try{
                 adminChatRoomListFragment.realTimeupdate();
             }catch (NullPointerException e){
@@ -126,7 +134,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     if(".UI.Nurse.ChatActivity".equals(taskInfo.get(0).topActivity.getShortClassName())){
                         Log.d("chatActivity","현재 채팅창임.");
                     }else{
-                        String sp[]=remoteMessage.getNotification().getBody().split("-");
+                        String sp[]=msg.split("-");
                         sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
                         getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
                         getRoomFlag.execute();

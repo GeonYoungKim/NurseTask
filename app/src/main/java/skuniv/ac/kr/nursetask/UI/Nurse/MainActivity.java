@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             Fcm fcm=new Fcm(getNurse().getName(),"updated_nurse",nurse_list_token,getNurse().getNurseid());
-            fcm.start();
+            fcm.execute();
         }
     }
 

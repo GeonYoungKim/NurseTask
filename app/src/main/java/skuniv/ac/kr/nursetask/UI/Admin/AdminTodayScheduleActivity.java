@@ -138,7 +138,7 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
             finish();
 
             Fcm fcm=new Fcm("update_schedule-"+nurse.getNurseid(),"confirm_schedule",nurse.getToken()+"","");
-            fcm.start();
+            fcm.execute();
         }
     }
 }

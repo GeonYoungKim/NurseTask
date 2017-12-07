@@ -196,7 +196,7 @@ public class ChatActivity extends ListActivity {
 
 
             Fcm fcm=new Fcm(my_nursename,(roomno+"-"+realContent),rooms_id,my_nurseid);
-            fcm.start();
+            fcm.execute();
             rooms_id="";
         }
     }

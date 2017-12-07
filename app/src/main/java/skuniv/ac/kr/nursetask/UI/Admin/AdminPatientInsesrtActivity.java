@@ -288,7 +288,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 }
             }
             Fcm fcm=new Fcm(getNurse().getName(),"Patient_insert - > "+insert_patient.getRoom()+"환자",nurse_list_token,getNurse().getNurseid());
-            fcm.start();
+            fcm.execute();
         }
     }
     private Nurse getNurse(){

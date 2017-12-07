@@ -100,7 +100,7 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
                 finish();
             }
             Fcm fcm=new Fcm("admin","incharge_patient_update",nurse.getToken()+"","");
-            fcm.start();
+            fcm.execute();
         }
     }
 
