@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.util.Calendar;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Nurse.MainActivity;
@@ -28,7 +29,7 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
     Button start_btn;
     Button end_btn;
     EditText content_et;
-    String nurseid;
+    Nurse nurse;
 
 
     @Override
@@ -37,7 +38,7 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_long_term_schedule_input);
 
         Intent intent=getIntent();
-        nurseid=(String)intent.getExtras().get("nurseid");
+        nurse=(Nurse) intent.getExtras().get("nurse");
 
         start_btn=(Button)findViewById(R.id.long_term_schedule_start_btn);
         end_btn=(Button)findViewById(R.id.long_term_schedule_end_btn);
@@ -71,7 +72,7 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         public String call() throws Exception {
 
             String url="http://117.17.142.135:8080/nurse/long_term_schedule_insert";
-            String query="startday="+start_btn.getText()+"&endday="+end_btn.getText()+"&content="+content_et.getText()+"&nurseid="+nurseid;
+            String query="startday="+start_btn.getText()+"&endday="+end_btn.getText()+"&content="+content_et.getText()+"&nurseid="+nurse.getNurseid();
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -95,6 +96,8 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         protected void onSuccess(String str) throws Exception {
             super.onSuccess(str);
             finish();
+            Fcm fcm=new Fcm("update_schedule-"+nurse.getNurseid(),"confirm_schedule",nurse.getToken()+"","");
+            fcm.execute();
         }
     }
     public void dialog_start_date_picker(View view){

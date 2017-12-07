@@ -37,7 +37,7 @@ public class AdminScheduleChoiceActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //Toast.makeText(getApplicationContext(),"장기 스케쥴 버튼",Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(AdminScheduleChoiceActivity.this,AdminLongTermScheduleInputActivity.class);
-                intent.putExtra("nurseid",nurse.getNurseid());
+                intent.putExtra("nurse",nurse);
                 startActivity(intent);
             }
         });

@@ -88,7 +88,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-
             try{
                 adminChatRoomListFragment.realTimeupdate();
             }catch (NullPointerException e){
@@ -104,8 +103,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 e.printStackTrace();
             }
             if(remoteMessage.getNotification().getBody().equals("confirm_schedule")){
-                sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+                sendNotification(remoteMessage.getNotification().getTitle(),msg);
                 String[] schedules=remoteMessage.getNotification().getTitle().split("-");
+                Log.d("today_schedule",schedules[1]);
                 GetScheduleNurse getScheduleNurse=new GetScheduleNurse(schedules[1]);
                 getScheduleNurse.execute();
             }else if(remoteMessage.getNotification().getBody().equals("updated_nurse")){
@@ -126,25 +126,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }catch (NullPointerException e){
                     e.printStackTrace();
                 }
-            }else {
-                if(remoteMessage.getNotification().getClickAction().equals(getNurse().getNurseid())){
-                    Log.d("my message","내가 보낸 메세지");
-                }else {
-                    Log.d("emulator","emulator");
-                    if(".UI.Nurse.ChatActivity".equals(taskInfo.get(0).topActivity.getShortClassName())){
-                        Log.d("chatActivity","현재 채팅창임.");
-                    }else{
-                        String sp[]=msg.split("-");
-                        sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
-                        getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
-                        getRoomFlag.execute();
+            }else if("incharge_patient_update".equals(msg)) {
+                sendNotification(remoteMessage.getNotification().getTitle(),"incharge_patient_update");
+            }else if("confirm_long_schedule".equals(msg)){
+                sendNotification(remoteMessage.getNotification().getTitle(),msg);
+            }else{
+                    if(remoteMessage.getNotification().getClickAction().equals(getNurse().getNurseid())){
+                        Log.d("my message","내가 보낸 메세지");
+                    }else {
+                        Log.d("emulator","emulator");
+                        if(".UI.Nurse.ChatActivity".equals(taskInfo.get(0).topActivity.getShortClassName())){
+                            Log.d("chatActivity","현재 채팅창임.");
+                        }else{
+                            String sp[]=msg.split("-");
+                            sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
+                            getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
+                            getRoomFlag.execute();
+                        }
+
                     }
 
                 }
-
             }
         }
-    }
+
     private Nurse getNurse(){
         Gson gson=new Gson();
         SharedPreferences mSharedPreferences=getSharedPreferences("Text_number_store",MODE_PRIVATE);
