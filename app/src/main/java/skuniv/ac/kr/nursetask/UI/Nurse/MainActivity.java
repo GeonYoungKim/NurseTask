@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
     private class LoginNurse extends SafeAsyncTask<Nurse> {
         @Override
         public Nurse call() throws Exception {
-
             System.out.println("---------------------------------"+id);
             System.out.println("---------------------------------"+password);
             String url="http://117.17.142.135:8080/nurse/login";

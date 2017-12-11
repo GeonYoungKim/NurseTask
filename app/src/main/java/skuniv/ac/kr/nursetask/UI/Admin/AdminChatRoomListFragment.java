@@ -56,13 +56,6 @@ public class AdminChatRoomListFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         Log.d("create adapter", "adapter");
         adminRoomsListArrayAdapter = new AdminRoomsListArrayAdapter(getActivity());
-
-
-        ////////////////////////////////////////////////////////////////////
-//토큰값을 받기위해 브로드캐스트 리시버 설
-
-
-
     }
 
 
