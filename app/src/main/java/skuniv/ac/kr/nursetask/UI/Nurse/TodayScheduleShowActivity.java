@@ -47,6 +47,7 @@ public class TodayScheduleShowActivity extends ListActivity {
         Intent intent=getIntent();
         lv= (ListView) findViewById(android.R.id.list);
         nurseid=(String)intent.getExtras().get("nurseid");
+        new FatchgetNurseTodayScheduleShowAsyncTask().execute();
 
         findViewById(R.id.today_schedule_show_back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,8 +55,6 @@ public class TodayScheduleShowActivity extends ListActivity {
                 finish();
             }
         });
-        new FatchgetNurseTodayScheduleShowAsyncTask().execute();
-
 
     }
     class CustomAdapter extends BaseAdapter {
@@ -114,7 +113,10 @@ public class TodayScheduleShowActivity extends ListActivity {
         @Override
         protected void onSuccess(Nurse nurse) throws Exception {
             super.onSuccess(nurse);
+            Log.d("today",nurse.getTodayschedule());
             today_schdule_str=nurse.getTodayschedule().split(",");
+
+
             for(int i=0;i<today_schdule_str.length;i++){
                 String[] today_schedule_unit_str=today_schdule_str[i].split("-");
                 today_schdule_map.put(today_schedule_unit_str[0],today_schedule_unit_str[1]);

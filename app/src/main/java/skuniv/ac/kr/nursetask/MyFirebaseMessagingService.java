@@ -102,7 +102,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
-            if(remoteMessage.getNotification().getBody().equals("confirm_schedule")){
+            if(msg.equals("confirm_schedule")){
                 sendNotification(remoteMessage.getNotification().getTitle(),msg);
                 String[] schedules=remoteMessage.getNotification().getTitle().split("-");
                 Log.d("today_schedule",schedules[1]);
