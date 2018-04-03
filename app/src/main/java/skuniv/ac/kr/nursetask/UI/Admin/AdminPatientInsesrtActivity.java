@@ -48,14 +48,14 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
     private static final int REQUEST_TAKE_PHOTO=2222;
     private static final int REQUEST_TAKE_ALBUM = 3333;
     private static final int REQUEST_IMAGE_CROP=4444;
-    EditText[] PatientInsertContents;
+    EditText[] patientInsertContents;
     String[] getPatientInsertContents;
     String imageFileName;
     private String imgPath="";
     ImageView imageView;
     Uri photoUri, albumUri;
-    String nurse_list_token="";
-    Patient insert_patient;
+    String nurseListToken="";
+    Patient insertPatient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,16 +69,16 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 getAlbum();
             }
         });
-        PatientInsertContents=new EditText[]{(EditText)findViewById(R.id.patientInsert_patientCode),(EditText)findViewById(R.id.patientInsert_patientName),(EditText)findViewById(R.id.patientInsert_patientBirth),
-                (EditText)findViewById(R.id.patientInsert_patientSex),(EditText)findViewById(R.id.patientInsert_patientDisease),(EditText)findViewById(R.id.patientInsert_patientPeriod),
-                (EditText)findViewById(R.id.patientInsert_patientNote),(EditText)findViewById(R.id.patientInsert_patientRoom)};
+        patientInsertContents=new EditText[]{(EditText)findViewById(R.id.patientinsertPatientCode),(EditText)findViewById(R.id.patientinsertPatientName),(EditText)findViewById(R.id.patientinsertPatientBirth),
+                (EditText)findViewById(R.id.patientinsertPatientSex),(EditText)findViewById(R.id.patientinsertPatientDisease),(EditText)findViewById(R.id.patientinsertPatientPeriod),
+                (EditText)findViewById(R.id.patientinsertPatientNote),(EditText)findViewById(R.id.patientinsertPatientRoom)};
 
         findViewById(R.id.patientInsert_insertBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPatientInsertContents=new String[]{PatientInsertContents[0].getText()+"",PatientInsertContents[1].getText()+"",PatientInsertContents[2].getText()+"",
-                        PatientInsertContents[3].getText()+"",PatientInsertContents[4].getText()+"",PatientInsertContents[5].getText()+"",PatientInsertContents[6].getText()+"",
-                        PatientInsertContents[7].getText()+""};
+                getPatientInsertContents=new String[]{patientInsertContents[0].getText()+"",patientInsertContents[1].getText()+"",patientInsertContents[2].getText()+"",
+                        patientInsertContents[3].getText()+"",patientInsertContents[4].getText()+"",patientInsertContents[5].getText()+"",patientInsertContents[6].getText()+"",
+                        patientInsertContents[7].getText()+""};
 
                 new InsertPatient().execute();
             }
@@ -95,8 +95,8 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         @Override
         public Patient call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/insertPatient";
-            String query="patientcode="+getPatientInsertContents[0]+"&name="+getPatientInsertContents[1]+"&birth="+getPatientInsertContents[2]+
+            String url="http://117.17.142.133:8080/nurse/insert-patient";
+            String query="patientCode="+getPatientInsertContents[0]+"&name="+getPatientInsertContents[1]+"&birth="+getPatientInsertContents[2]+
                     "&sex="+getPatientInsertContents[3]+"&disease="+getPatientInsertContents[4]+"&period="+getPatientInsertContents[5]+"&note="+getPatientInsertContents[6]
                     +"&room="+getPatientInsertContents[7]+"&image="+imageFileName;
             HttpRequest request=HttpRequest.post(url);
@@ -126,7 +126,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"환자추가에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getApplicationContext(),"환자추가에 성공하셨습니다."+patient.getName()+"님",Toast.LENGTH_SHORT).show();
-                insert_patient=patient;
+                insertPatient=patient;
                 Intent returnIntent = new Intent();
                 setResult(Activity.RESULT_CANCELED, returnIntent);
                 new FatchNurseListAsyncTask().execute();
@@ -250,7 +250,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         }
     }
     public void uploadFile(String filePath){
-        String url = "http://117.17.142.135:8080/nurse/photo";
+        String url = "http://117.17.142.133:8080/nurse/photo";
         try {
             UploadFile uploadFile = new UploadFile(AdminPatientInsesrtActivity.this, new AsyncResponse() {
                 @Override
@@ -281,13 +281,13 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
         protected void onSuccess(List<Nurse> Nurses) throws Exception {
             super.onSuccess(Nurses);
             for(Nurse nurse:Nurses){
-                if(nurse_list_token.equals("")){
-                    nurse_list_token+=nurse.getToken();
+                if(nurseListToken.equals("")){
+                    nurseListToken+=nurse.getToken();
                 }else{
-                    nurse_list_token+=","+nurse.getToken();
+                    nurseListToken+=","+nurse.getToken();
                 }
             }
-            Fcm fcm=new Fcm(getNurse().getName(),"Patient_insert - > "+insert_patient.getRoom()+"환자",nurse_list_token,getNurse().getNurseid());
+            Fcm fcm=new Fcm(getNurse().getName(),"Patient_insert - > "+insertPatient.getRoom()+"환자",nurseListToken,getNurse().getnurseId());
             fcm.execute();
         }
     }

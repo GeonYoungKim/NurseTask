@@ -29,7 +29,7 @@ import skuniv.ac.kr.nursetask.UI.Admin.AdminInChargePatientSelectActivity;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminListArrayAdapter;
 
 public class InchargePatientShowActivity extends ListActivity {
-    String nurseid;
+    String nurseId;
     ListView lv;
     List<Patient> patients;
 
@@ -41,9 +41,9 @@ public class InchargePatientShowActivity extends ListActivity {
 
         Intent intent=getIntent();
         lv= (ListView) findViewById(android.R.id.list);
-        nurseid=(String)intent.getExtras().get("nurseid");
+        nurseId=(String)intent.getExtras().get("nurseId");
 
-        System.out.println(nurseid+"gggggggggggggggggggggggggggggggggggggggggg");
+        System.out.println(nurseId+"gggggggggggggggggggggggggggggggggggggggggg");
 
         findViewById(R.id.incharge_patient_show_back_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +83,8 @@ public class InchargePatientShowActivity extends ListActivity {
 
         @Override
         public List<Patient> call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/incharge_patient_show";
-            String query="nurseid="+nurseid;
+            String url="http://117.17.142.133:8080/nurse/incharge-patient-show";
+            String query="nurseId="+nurseId;
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );

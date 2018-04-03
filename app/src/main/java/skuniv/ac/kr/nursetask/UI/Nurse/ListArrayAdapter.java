@@ -36,12 +36,12 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
     Bitmap bmImg;
     public ChatRoomListFragment chatRoomListFragment;
     private LayoutInflater layoutInflater;
-    public static Nurse ownnurse;
+    public static Nurse ownNurse;
     private String data1;
     private String data2;
-    private String roomname;
+    private String roomName;
     private int count;
-    String imageUrl = "http://117.17.142.135:8080/img/";
+    String imageUrl = "http://117.17.142.133:8080/img/";
 
     public ListArrayAdapter(@NonNull Context context) {
         super(context, R.layout.row_nurse_list);
@@ -73,9 +73,9 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
             @Override
             public void onClick(View v) {
                 //대화하기
-                data1 = ownnurse.getNurseid();
-                data2 = nurse.getNurseid();
-                roomname = ownnurse.getName() + "님," + nurse.getName() + "님";
+                data1 = ownNurse.getnurseId();
+                data2 = nurse.getnurseId();
+                roomName = ownNurse.getName() + "님," + nurse.getName() + "님";
                 count = 2;
                 new InsertRoom().execute();
             }
@@ -96,8 +96,8 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
 
         @Override
         public Room call() throws Exception {
-            String url = "http://117.17.142.135:8080/nurse/inserChatRoom";
-            String query = "data1=" + data1 + "&data2=" + data2 + "&roomname=" + roomname + "&count=" + count;
+            String url = "http://117.17.142.133:8080/nurse/insert-chat-room";
+            String query = "data1=" + data1 + "&data2=" + data2 + "&roomName=" + roomName + "&count=" + count;
 
             HttpRequest request = HttpRequest.post(url);
             request.accept(HttpRequest.CONTENT_TYPE_JSON);
@@ -124,12 +124,12 @@ public class ListArrayAdapter extends ArrayAdapter<Nurse> {
         @Override
         protected void onSuccess(Room room) throws Exception {
             super.onSuccess(room);
-            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + room.getRoomno());
+            System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + room.getRoomNo());
             Intent intent = new Intent(getContext(), ChatActivity.class);
-            intent.putExtra("roomno", room.getRoomno());
+            intent.putExtra("roomNo", room.getRoomNo());
             getContext().startActivity(intent);
             chatRoomListFragment = GetSet.getChatRoomListFragment();
-            chatRoomListFragment.realTimeupdate();
+            chatRoomListFragment.realTimeUpdate();
         }
 
     }

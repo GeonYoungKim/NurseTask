@@ -80,7 +80,7 @@ public class NurseListFragment extends ListFragment {
             getView().findViewById(R.id.progress).setVisibility(View.GONE);
         }
     }
-    public void realTimeupdate(){
+    public void realTimeUpdate(){
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.detach(NurseListFragment.this).attach(NurseListFragment.this).commitAllowingStateLoss();
     }

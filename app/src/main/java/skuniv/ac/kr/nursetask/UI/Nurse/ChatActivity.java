@@ -3,9 +3,7 @@ package skuniv.ac.kr.nursetask.UI.Nurse;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,30 +12,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
-import skuniv.ac.kr.nursetask.Core.domain.Chat;
-import skuniv.ac.kr.nursetask.Core.domain.NurseRoom;
+import skuniv.ac.kr.nursetask.Core.domain.ChatVo;
+import skuniv.ac.kr.nursetask.Core.domain.NurseRoomVo;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.ChatProvider;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminChatRoomListFragment;
-import skuniv.ac.kr.nursetask.UI.Admin.AdminNursesListFragment;
 import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 
 public class ChatActivity extends ListActivity {
@@ -48,15 +39,15 @@ public class ChatActivity extends ListActivity {
     Button inviteBtn;
     ListView lv;
     EditText charEditText;
-    List<Chat> chats;
-    int roomno;
+    List<ChatVo> chatVos;
+    int roomNo;
     CustomAdapter customAdapter;
-    static String my_nurseid;
-    static String my_nursename;
+    static String myNurseId;
+    static String myNurseName;
 
     String content;
     String realContent;
-    static String rooms_id;
+    static String roomsId;
     AdminChatRoomListFragment adminChatRoomListFragment;
     ChatRoomListFragment chatRoomListFragment;
 
@@ -65,14 +56,14 @@ public class ChatActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        rooms_id="";
+        roomsId="";
 
         GetSet.setChatActivity(this);
 
         lv= (ListView) findViewById(android.R.id.list);
 
         Intent intent=getIntent();
-        roomno=(int)intent.getExtras().get("roomno");
+        roomNo=(int)intent.getExtras().get("roomNo");
         submitChat=(Button)findViewById(R.id.submitChat);
         charEditText=(EditText)findViewById(R.id.charEditText);
         new FatchAdminChatListAsyncTask().execute();
@@ -83,22 +74,22 @@ public class ChatActivity extends ListActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(ChatActivity.this,InviteActivity.class);
-                intent.putExtra("roomno",roomno);
+                intent.putExtra("roomNo",roomNo);
                 startActivityForResult(intent,1);
             }
         });
         submitChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new getNurseRoom().execute();
+                new GetNurseRoom().execute();
                 content=charEditText.getText().toString();
                 realContent=charEditText.getText().toString();
-                content=rooms_id+"-"+content+"-"+my_nurseid;
+                content=roomsId+"-"+content+"-"+myNurseId;
                 charEditText.setText("");
                 new InsertChat().execute();
             }
         });
-        getRoomFlag getRoomFlag=new getRoomFlag(roomno+"",my_nurseid);
+        getRoomFlag getRoomFlag=new getRoomFlag(roomNo+"",myNurseId);
         getRoomFlag.execute();
 
     }
@@ -107,15 +98,15 @@ public class ChatActivity extends ListActivity {
 
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
-                String result=data.getStringExtra("rooms_id");
-                this.rooms_id=result;
+                String result=data.getStringExtra("roomsId");
+                this.roomsId=result;
             }
         }
     }
     class CustomAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return chats.size();
+            return chatVos.size();
         }
 
         @Override
@@ -131,24 +122,24 @@ public class ChatActivity extends ListActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            if(my_nurseid.equals(chats.get(position).getNurseid2())){
+            if(myNurseId.equals(chatVos.get(position).getnurseId2())){
                 convertView=getLayoutInflater().inflate(R.layout.row_chat_list,null);
-                ((TextView)convertView.findViewById(R.id.chatText)).setText(chats.get(position).getChatcontent()+"");
+                ((TextView)convertView.findViewById(R.id.chatText)).setText(chatVos.get(position).getChatContent()+"");
             }else{
                 convertView=getLayoutInflater().inflate(R.layout.row__chat_left_list,null);
-                ((TextView)convertView.findViewById(R.id.chatText)).setText(chats.get(position).getChatcontent()+"");
-                ((TextView)convertView.findViewById(R.id.chatName)).setText(chats.get(position).getNurseid2()+"");
+                ((TextView)convertView.findViewById(R.id.chatText)).setText(chatVos.get(position).getChatContent()+"");
+                ((TextView)convertView.findViewById(R.id.chatName)).setText(chatVos.get(position).getnurseId2()+"");
             }
             return convertView;
         }
     }
-    public class FatchAdminChatListAsyncTask extends SafeAsyncTask<List<Chat>> {
+    public class FatchAdminChatListAsyncTask extends SafeAsyncTask<List<ChatVo>> {
 
         @Override
-        public List<Chat> call() throws Exception {
-            ChatProvider chatProvider=new ChatProvider(roomno);
-            List<Chat> Chats=chatProvider.FatchChatList();
-            return Chats;
+        public List<ChatVo> call() throws Exception {
+            ChatProvider chatProvider=new ChatProvider(roomNo);
+            List<ChatVo> chatVos =chatProvider.FatchChatList();
+            return chatVos;
         }
         @Override
         protected void onException(Exception e) throws RuntimeException {
@@ -156,10 +147,10 @@ public class ChatActivity extends ListActivity {
             Log.e("FatchUserListAsyncTask","error"+e);
         }
         @Override
-        protected void onSuccess(List<Chat> Chats) throws Exception {
-            super.onSuccess(Chats);
-            System.out.println(Chats);
-            chats=Chats;
+        protected void onSuccess(List<ChatVo> chatVos) throws Exception {
+            super.onSuccess(chatVos);
+            System.out.println(chatVos);
+            ChatActivity.this.chatVos = chatVos;
             customAdapter = new CustomAdapter();
             lv.setAdapter(customAdapter);
             lv.post(new Runnable(){ public void run() { lv.setSelection(lv.getCount() - 1); }});
@@ -169,8 +160,8 @@ public class ChatActivity extends ListActivity {
     private class InsertChat extends SafeAsyncTask<String> {
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/insertChat";
-            String query="roomno="+roomno+"&nurseid2="+my_nurseid+"&chatcontent="+realContent;
+            String url="http://117.17.142.133:8080/nurse/insert-chat";
+            String query="roomNo="+roomNo+"&nurseId2="+myNurseId+"&chatContent="+realContent;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -195,16 +186,16 @@ public class ChatActivity extends ListActivity {
             new FatchAdminChatListAsyncTask().execute();
 
 
-            Fcm fcm=new Fcm(my_nursename,(roomno+"-"+realContent),rooms_id,my_nurseid);
+            Fcm fcm=new Fcm(myNurseName,(roomNo+"-"+realContent),roomsId,myNurseId);
             fcm.execute();
-            rooms_id="";
+            roomsId="";
         }
     }
-    private class getNurseRoom extends SafeAsyncTask<List<NurseRoom>> {
+    private class GetNurseRoom extends SafeAsyncTask<List<NurseRoomVo>> {
         @Override
-        public List<NurseRoom> call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/getNurseRoom";
-            String query="roomno="+roomno;
+        public List<NurseRoomVo> call() throws Exception {
+            String url="http://117.17.142.133:8080/nurse/get-nurse-room";
+            String query="roomNo="+roomNo;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -217,8 +208,8 @@ public class ChatActivity extends ListActivity {
                 return null;
             }
             JSONResultFatchListNurseRoom result=new GsonBuilder().create().fromJson(request.bufferedReader(),JSONResultFatchListNurseRoom.class);
-            List<NurseRoom> nurseRooms=  result.getData();
-            return nurseRooms;
+            List<NurseRoomVo> nurseRoomVos =  result.getData();
+            return nurseRoomVos;
         }
         @Override
         protected void onException(Exception e) throws RuntimeException {
@@ -226,31 +217,31 @@ public class ChatActivity extends ListActivity {
             System.out.println("----------->exception: "+e);
         }
         @Override
-        protected void onSuccess(List<NurseRoom> nurseRooms) throws Exception {
-            super.onSuccess(nurseRooms);
+        protected void onSuccess(List<NurseRoomVo> nurseRoomVos) throws Exception {
+            super.onSuccess(nurseRoomVos);
 
-            for(NurseRoom nurseRoom:nurseRooms){
-                if(rooms_id.equals("")){
-                    rooms_id+=nurseRoom.getToken();
+            for(NurseRoomVo nurseRoomVo : nurseRoomVos){
+                if(roomsId.equals("")){
+                    roomsId+= nurseRoomVo.getToken();
                 }else{
-                    rooms_id+=","+nurseRoom.getToken();
+                    roomsId+=","+ nurseRoomVo.getToken();
                 }
             }
         }
     }
-    private class JSONResultFatchListNurseRoom extends JsonResult<List<NurseRoom>> {}
+    private class JSONResultFatchListNurseRoom extends JsonResult<List<NurseRoomVo>> {}
 
     private class getRoomFlag extends SafeAsyncTask<String> {
-        String roomno;
-        String nurseid;
-        public getRoomFlag(String roomno,String nurseid){
-            this.roomno=roomno;
-            this.nurseid=nurseid;
+        String roomNo;
+        String nurseId;
+        public getRoomFlag(String roomNo,String nurseId){
+            this.roomNo=roomNo;
+            this.nurseId=nurseId;
         }
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/getRoomFlag2";
-            String query="roomno="+roomno+"&nurseid="+nurseid;
+            String url="http://117.17.142.133:8080/nurse/get-room-flag2";
+            String query="roomNo="+roomNo+"&nurseId="+nurseId;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -275,11 +266,11 @@ public class ChatActivity extends ListActivity {
             adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
             chatRoomListFragment=GetSet.getChatRoomListFragment();
             try{
-                adminChatRoomListFragment.realTimeupdate();
+                adminChatRoomListFragment.realTimeUpdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }try{
-                chatRoomListFragment.realTimeupdate();
+                chatRoomListFragment.realTimeUpdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }

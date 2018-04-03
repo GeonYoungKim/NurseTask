@@ -48,47 +48,47 @@ public class ChoiceRoomFragment extends Fragment implements View.OnClickListener
         switch (v.getId()){
             case R.id.room_101:
                 room="101- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_102:
                 room="102- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_103:
                 room="103- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_201:
                 room="201- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_202:
                 room="202- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_203:
                 room="203- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_301:
                 room="301- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_302:
                 room="302- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
             case R.id.room_303:
                 room="303- ";
-                new RoomPatientList().execute();
+                new roomPatientList().execute();
                 break;
         }
     }
-    private class RoomPatientList extends SafeAsyncTask<List<Patient>> {
+    private class roomPatientList extends SafeAsyncTask<List<Patient>> {
 
         @Override
         public List<Patient> call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/roomPatientList";
+            String url="http://117.17.142.133:8080/nurse/room-patient-list";
             String query="room="+room;
             System.out.println("**************************************"+room);
             HttpRequest request=HttpRequest.post(url);
@@ -103,8 +103,8 @@ public class ChoiceRoomFragment extends Fragment implements View.OnClickListener
                 return null;
             }
             JSONResultFatchRoomePatientList result=new GsonBuilder().create().fromJson(request.bufferedReader(),JSONResultFatchRoomePatientList.class);
-            List<Patient> roompatientlist=result.getData();
-            return roompatientlist;
+            List<Patient> roomPatientList=result.getData();
+            return roomPatientList;
         }
         @Override
         protected void onException(Exception e) throws RuntimeException {
@@ -112,11 +112,11 @@ public class ChoiceRoomFragment extends Fragment implements View.OnClickListener
             System.out.println("----------->exception: "+e);
         }
         @Override
-        protected void onSuccess(List<Patient> roompatientlist) throws Exception {
-            super.onSuccess(roompatientlist);
-            System.out.println(roompatientlist);
+        protected void onSuccess(List<Patient> roomPatientList) throws Exception {
+            super.onSuccess(roomPatientList);
+            System.out.println(roomPatientList);
             Intent intent=new Intent(getActivity(),RoomActivity.class);
-            intent.putExtra("roompatientlist",(Serializable)roompatientlist);
+            intent.putExtra("roomPatientList",(Serializable)roomPatientList);
             startActivity(intent);
         }
     }

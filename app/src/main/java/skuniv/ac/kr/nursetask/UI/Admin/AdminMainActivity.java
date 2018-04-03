@@ -30,14 +30,14 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
     private DrawerLayout drawerLayout;
     private AdminMainTabsAdapter mainTabsAdapter;
     NavigationView navigationView;
-    String nurseid;
+    String nurseId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_main);
 
         Intent intent=getIntent();
-        nurseid=(String)intent.getExtras().get("nurseid");
+        nurseId=(String)intent.getExtras().get("nurseId");
 
         navigationView=(NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -68,7 +68,7 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
                 public void onClick(DialogInterface dialog, int which) {
                     SharedPreferences preferences = getSharedPreferences("Text_number_store", MODE_PRIVATE);
                     preferences.edit().remove("nurse").commit();
-                    UpdateToken updateToken=new UpdateToken(nurseid,"0");
+                    UpdateToken updateToken=new UpdateToken(nurseId,"0");
                     updateToken.execute();
                     Intent intent=new Intent(AdminMainActivity.this,MainActivity.class);
                     startActivity(intent);
@@ -79,12 +79,12 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
         }else if(id==R.id.today_Work){
             //오늘 스케쥴 보여주기
             Intent intent=new Intent(AdminMainActivity.this,TodayScheduleShowActivity.class);
-            intent.putExtra("nurseid",nurseid);
+            intent.putExtra("nurseId",nurseId);
             startActivity(intent);
         }else if(id==R.id.long_term_Work){
             //장기 스케쥴 보여주기
             Intent intent=new Intent(AdminMainActivity.this,LongTermScheduleShowActivity.class);
-            intent.putExtra("nurseid",nurseid);
+            intent.putExtra("nurseId",nurseId);
             startActivity(intent);
         }else if(id==R.id.charge_Patient_List){
             //담당 환자 보여주기

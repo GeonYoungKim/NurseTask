@@ -31,22 +31,22 @@ import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 
 public class TodayScheduleShowActivity extends ListActivity {
-    String nurseid;
+    String nurseId;
     ListView lv;
-    HashMap<String,String> today_schdule_map;
-    String[] today_schdule_str;
-    TreeMap<String,String> treemap;
+    HashMap<String,String> todaySchduleMap;
+    String[] todaySchduleStr;
+    TreeMap<String,String> treeMap;
     Iterator<String> iterator;
-    List<String> treemap_key_list;
+    List<String> treeMapKeyList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today_schedule_show);
 
-        today_schdule_map=new HashMap<String, String>();
+        todaySchduleMap=new HashMap<String, String>();
         Intent intent=getIntent();
         lv= (ListView) findViewById(android.R.id.list);
-        nurseid=(String)intent.getExtras().get("nurseid");
+        nurseId=(String)intent.getExtras().get("nurseId");
         new FatchgetNurseTodayScheduleShowAsyncTask().execute();
 
         findViewById(R.id.today_schedule_show_back).setOnClickListener(new View.OnClickListener() {
@@ -61,7 +61,7 @@ public class TodayScheduleShowActivity extends ListActivity {
         LayoutInflater layoutInflater;
         @Override
         public int getCount() {
-            return treemap.size();
+            return treeMap.size();
         }
         @Override
         public Object getItem(int position) {
@@ -77,8 +77,8 @@ public class TodayScheduleShowActivity extends ListActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             convertView=getLayoutInflater().inflate(R.layout.row_today_schedule_show_list,null);
-            ((TextView)convertView.findViewById(R.id.today_schedule_show_time)).setText(treemap_key_list.get(position));
-            ((TextView)convertView.findViewById(R.id.today_schedule_show_content)).setText(treemap.get(treemap_key_list.get(position)));
+            ((TextView)convertView.findViewById(R.id.today_schedule_show_time)).setText(treeMapKeyList.get(position));
+            ((TextView)convertView.findViewById(R.id.today_schedule_show_content)).setText(treeMap.get(treeMapKeyList.get(position)));
             return convertView;
         }
     }
@@ -86,8 +86,8 @@ public class TodayScheduleShowActivity extends ListActivity {
 
         @Override
         public Nurse call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/today_schedule_show";
-            String query="nurseid="+nurseid;
+            String url="http://117.17.142.133:8080/nurse/today-schedule-show";
+            String query="nurseId="+nurseId;
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -113,21 +113,21 @@ public class TodayScheduleShowActivity extends ListActivity {
         @Override
         protected void onSuccess(Nurse nurse) throws Exception {
             super.onSuccess(nurse);
-            Log.d("today",nurse.getTodayschedule());
-            today_schdule_str=nurse.getTodayschedule().split(",");
+            Log.d("today",nurse.getTodaySchedule());
+            todaySchduleStr=nurse.getTodaySchedule().split(",");
 
 
-            for(int i=0;i<today_schdule_str.length;i++){
-                String[] today_schedule_unit_str=today_schdule_str[i].split("-");
-                today_schdule_map.put(today_schedule_unit_str[0],today_schedule_unit_str[1]);
+            for(int i=0;i<todaySchduleStr.length;i++){
+                String[] today_schedule_unit_str=todaySchduleStr[i].split("-");
+                todaySchduleMap.put(today_schedule_unit_str[0],today_schedule_unit_str[1]);
             }
 
-            treemap=new TreeMap<String,String>(today_schdule_map);
-            iterator=treemap.keySet().iterator();
-            treemap_key_list=new ArrayList<String>();
+            treeMap=new TreeMap<String,String>(todaySchduleMap);
+            iterator=treeMap.keySet().iterator();
+            treeMapKeyList=new ArrayList<String>();
             while(iterator.hasNext()){
                 String key=iterator.next();
-                treemap_key_list.add(key);
+                treeMapKeyList.add(key);
             }
 
             CustomAdapter customAdapter = new CustomAdapter();

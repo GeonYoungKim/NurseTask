@@ -64,11 +64,11 @@ public class AdminPatientsListFragment extends ListFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_CANCELED) {
-                realTimeupdate();
+                realTimeUpdate();
             }
         }
     }
-    public void realTimeupdate(){
+    public void realTimeUpdate(){
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.detach(AdminPatientsListFragment.this).attach(AdminPatientsListFragment.this).commitAllowingStateLoss();
     }

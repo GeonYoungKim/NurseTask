@@ -16,7 +16,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import skuniv.ac.kr.nursetask.Core.domain.SharedMemory;
+import skuniv.ac.kr.nursetask.Core.domain.SingleTon;
 
 
 /**
@@ -157,8 +157,8 @@ public class UploadFile extends AsyncTask<String, String, String> {
                 line = null;
                 while ((line = rd.readLine()) != null) {
                     Log.i("Upload State", line);
-                    SharedMemory sharedMemory = SharedMemory.getInstance();
-                    sharedMemory.setResultString(line);
+                    SingleTon singleTon = SingleTon.getInstance();
+                    singleTon.setResultString(line);
                 }
 
                 //close the streams //
@@ -174,9 +174,9 @@ public class UploadFile extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        SharedMemory sharedMemory = SharedMemory.getInstance();
+        SingleTon singleTon = SingleTon.getInstance();
         String line = s;
-        line = sharedMemory.getResultString();
+        line = singleTon.getResultString();
 //        Log.d("line:: ", "onPostExecute: "+line);
         Log.d(TAG, "onPostExecute: "+line);
         delegate.processFinish(line);

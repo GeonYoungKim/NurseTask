@@ -26,7 +26,7 @@ public class ChoiceRoomActivity extends AppCompatActivity implements NavigationV
     private DrawerLayout drawerLayout;
     private MainTabsAdapter mainTabsAdapter;
     NavigationView navigationView;
-    String nurseid;
+    String nurseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class ChoiceRoomActivity extends AppCompatActivity implements NavigationV
         setContentView(R.layout.activity_choice_room);
 
         Intent intent=getIntent();
-        nurseid=(String)intent.getExtras().get("nurseid");
+        nurseId=(String)intent.getExtras().get("nurseId");
 
         navigationView=(NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -67,7 +67,7 @@ public class ChoiceRoomActivity extends AppCompatActivity implements NavigationV
                     preferences.edit().remove("nurse").commit();
                     Intent intent=new Intent(ChoiceRoomActivity.this,MainActivity.class);
                     startActivity(intent);
-                    UpdateToken updateToken=new UpdateToken(nurseid,"0");
+                    UpdateToken updateToken=new UpdateToken(nurseId,"0");
                     updateToken.execute();
                     finish();
                 }
@@ -76,18 +76,18 @@ public class ChoiceRoomActivity extends AppCompatActivity implements NavigationV
         }else if(id==R.id.today_Work){
             //오늘 스케쥴 보여주기
             Intent intent=new Intent(ChoiceRoomActivity.this,TodayScheduleShowActivity.class);
-            intent.putExtra("nurseid",nurseid);
+            intent.putExtra("nurseId",nurseId);
             startActivity(intent);
 
         }else if(id==R.id.long_term_Work){
             //장기 스케쥴 보여주기
             Intent intent=new Intent(ChoiceRoomActivity.this,LongTermScheduleShowActivity.class);
-            intent.putExtra("nurseid",nurseid);
+            intent.putExtra("nurseId",nurseId);
             startActivity(intent);
         }else if(id==R.id.charge_Patient_List){
             //담당 환자 보여주기
             Intent intent=new Intent(ChoiceRoomActivity.this,InchargePatientShowActivity.class);
-            intent.putExtra("nurseid",nurseid);
+            intent.putExtra("nurseId",nurseId);
             startActivity(intent);
         }
         return true;

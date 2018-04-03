@@ -44,7 +44,7 @@
             android:layout_marginLeft="2dp"
             android:background="#04B486"
             android:textColor="#FFFFFF"
-            android:id="@+id/long_term_schedule_content_btn"
+            android:id="@+id/long_term_schedule_contentBtn"
             android:textStyle="bold"
             android:textSize="10dp" />
     </LinearLayout>

@@ -5,33 +5,25 @@ package skuniv.ac.kr.nursetask.Core.domain;
  */
 
 public class Room {
-    private int roomno;
-    private String roomname;
+    private int roomNo;
+    private String roomName;
     private int count;
     private int flag;
 
-    public int getFlag() {
-        return flag;
+    public int getRoomNo() {
+        return roomNo;
     }
 
-    public void setFlag(int flag) {
-        this.flag = flag;
+    public void setRoomNo(int roomNo) {
+        this.roomNo = roomNo;
     }
 
-    public int getRoomno() {
-        return roomno;
+    public String getroomName() {
+        return roomName;
     }
 
-    public void setRoomno(int roomno) {
-        this.roomno = roomno;
-    }
-
-    public String getRoomname() {
-        return roomname;
-    }
-
-    public void setRoomname(String roomname) {
-        this.roomname = roomname;
+    public void setroomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public int getCount() {
@@ -40,5 +32,13 @@ public class Room {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
     }
 }

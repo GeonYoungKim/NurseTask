@@ -39,12 +39,12 @@ import static java.security.AccessController.getContext;
 
 public class AdminTodayScheduleActivity extends AppCompatActivity {
     LinearLayout container;
-    EditText time_et;
-    EditText content_et;
+    EditText timeEdit;
+    EditText contentEdit;
     int i;
     Nurse nurse;
-    Map<EditText,EditText> today_schedule_map;
-    String today_schedule_result="";
+    Map<EditText,EditText> todayScheduleMap;
+    String todayScheduleResult="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +54,12 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
         nurse=(Nurse)intent.getExtras().get("nurse");
         System.out.println(nurse.getToken());
         i=1;
-        today_schedule_map=new HashMap<EditText, EditText>();
+        todayScheduleMap=new HashMap<EditText, EditText>();
 
         container=(LinearLayout) findViewById(R.id.today_parent_layout);
-        time_et=(EditText)findViewById(R.id.today_schedule_time_1);
-        content_et=(EditText)findViewById(R.id.today_schedule_content_1);
-        today_schedule_map.put(time_et,content_et);
+        timeEdit=(EditText)findViewById(R.id.today_schedule_time_1);
+        contentEdit=(EditText)findViewById(R.id.today_schedule_content_1);
+        todayScheduleMap.put(timeEdit,contentEdit);
 
         findViewById(R.id.today_schedule_addbtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,13 +71,13 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams linear_params=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                 linearLayout.setLayoutParams(linear_params);
 
-                LinearLayout.LayoutParams time_params=(LinearLayout.LayoutParams)time_et.getLayoutParams();
+                LinearLayout.LayoutParams time_params=(LinearLayout.LayoutParams)timeEdit.getLayoutParams();
 
                 EditText time_edit=new EditText(AdminTodayScheduleActivity.this);
                 time_edit.setLayoutParams(time_params);
                 time_edit.setHint("18:00");
 
-                LinearLayout.LayoutParams content_param=(LinearLayout.LayoutParams)content_et.getLayoutParams();
+                LinearLayout.LayoutParams content_param=(LinearLayout.LayoutParams)contentEdit.getLayoutParams();
 
                 EditText content_edit=new EditText(AdminTodayScheduleActivity.this);
                 content_edit.setLayoutParams(content_param);
@@ -86,7 +86,7 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
                 linearLayout.addView(content_edit);
                 //부모 뷰에 추가
                 container.addView(linearLayout);
-                today_schedule_map.put(time_edit,content_edit);
+                todayScheduleMap.put(time_edit,content_edit);
             }
         });
 
@@ -94,25 +94,25 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                for(EditText time:today_schedule_map.keySet()){
-                    today_schedule_result+=time.getText()+""+"-"+today_schedule_map.get(time).getText()+"";
-                    if(i!=today_schedule_map.size()) {
-                        today_schedule_result += ",";
+                for(EditText time:todayScheduleMap.keySet()){
+                    todayScheduleResult+=time.getText()+""+"-"+todayScheduleMap.get(time).getText()+"";
+                    if(i!=todayScheduleMap.size()) {
+                        todayScheduleResult += ",";
                     }
                     i++;
                 }
-                System.out.println(today_schedule_result);
-                new today_schedule_update().execute();
+                System.out.println(todayScheduleResult);
+                new TodayScheduleUpdate().execute();
             }
         });
 
     }
-    private class today_schedule_update extends SafeAsyncTask<String> {
+    private class TodayScheduleUpdate extends SafeAsyncTask<String> {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/today_schedule_update";
-            String query="today_schedule_result="+today_schedule_result+"&nurseid="+nurse.getNurseid();
+            String url="http://117.17.142.133:8080/nurse/today-schedule-update";
+            String query="todayScheduleResult="+todayScheduleResult+"&nurseId="+nurse.getnurseId();
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -137,7 +137,7 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
             super.onSuccess(str);
             finish();
 
-            Fcm fcm=new Fcm("update_schedule-"+nurse.getNurseid(),"confirm_schedule",nurse.getToken()+"","");
+            Fcm fcm=new Fcm("update_schedule-"+nurse.getnurseId(),"confirm_schedule",nurse.getToken()+"","");
             fcm.execute();
         }
     }

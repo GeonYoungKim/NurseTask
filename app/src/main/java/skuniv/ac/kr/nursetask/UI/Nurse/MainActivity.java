@@ -1,14 +1,8 @@
 package skuniv.ac.kr.nursetask.UI.Nurse;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,23 +11,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.util.List;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
-import skuniv.ac.kr.nursetask.Core.domain.NurseRoom;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
@@ -44,8 +31,6 @@ import skuniv.ac.kr.nursetask.UI.Admin.AdminListArrayAdapter;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminMainActivity;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminNursesListFragment;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminPatientListArrayAdapter;
-import skuniv.ac.kr.nursetask.UI.Admin.AlarmNotificationReceiver;
-import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 import skuniv.ac.kr.nursetask.UI.Admin.UpdateToken;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,27 +46,27 @@ public class MainActivity extends AppCompatActivity {
     static BufferedWriter mWriter;
     String mRecvData="";
     //CheckRecv mCheckRecv;
-    private EditText inputid;
-    private EditText inputpassword;
+    private EditText inputId;
+    private EditText inputPassword;
     private String id;
     private String password;
-    String nurseid;
-    String nurse_list_token="";
+    String nurseId;
+    String nurseListToken="";
        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         if(getNurse()!=null){
-            if(getNurse().getNurseid().equals("admin")){
+            if(getNurse().getnurseId().equals("admin")){
                 admin_Login(getNurse());
             }else{
                 nurse_Login(getNurse());
             }
         }
 
-        inputid=(EditText)findViewById(R.id.nurseId);
-        inputpassword=(EditText)findViewById(R.id.nursePassword);
+        inputId=(EditText)findViewById(R.id.nurseId);
+        inputPassword=(EditText)findViewById(R.id.nursePassword);
 
         findViewById(R.id.memberShip).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +79,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.loginBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                id=inputid.getText()+"";
-                password=inputpassword.getText()+"";
+                id=inputId.getText()+"";
+                password=inputPassword.getText()+"";
                 new LoginNurse().execute();
 
-                inputid.setText("");
-                inputpassword.setText("");
+                inputId.setText("");
+                inputPassword.setText("");
             }
         });
     }
@@ -108,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         public Nurse call() throws Exception {
             System.out.println("---------------------------------"+id);
             System.out.println("---------------------------------"+password);
-            String url="http://117.17.142.135:8080/nurse/login";
+            String url="http://117.17.142.133:8080/nurse/login";
             String query="id="+id+"&password="+password;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -136,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             if(nurse==null){
                 Toast.makeText(getApplicationContext(),"로그인에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
-                if("admin".equals(nurse.getNurseid()+"")&&"admin".equals(nurse.getPassword()+"")){
+                if("admin".equals(nurse.getnurseId()+"")&&"admin".equals(nurse.getPassword()+"")){
                     storeNurse(nurse);
                     admin_Login(nurse);
                 }else{
@@ -166,13 +151,13 @@ public class MainActivity extends AppCompatActivity {
         protected void onSuccess(List<Nurse> Nurses) throws Exception {
             super.onSuccess(Nurses);
             for(Nurse nurse:Nurses){
-                if(nurse_list_token.equals("")){
-                    nurse_list_token+=nurse.getToken();
+                if(nurseListToken.equals("")){
+                    nurseListToken+=nurse.getToken();
                 }else{
-                    nurse_list_token+=","+nurse.getToken();
+                    nurseListToken+=","+nurse.getToken();
                 }
             }
-            Fcm fcm=new Fcm(getNurse().getName(),"updated_nurse",nurse_list_token,getNurse().getNurseid());
+            Fcm fcm=new Fcm(getNurse().getName(),"updated_nurse",nurseListToken,getNurse().getnurseId());
             fcm.execute();
         }
     }
@@ -196,35 +181,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void admin_Login(Nurse nurse){
-        AdminListArrayAdapter.ownnurse=nurse;
+        AdminListArrayAdapter.ownNurse=nurse;
 
-        nurseid=nurse.getNurseid();
+        nurseId=nurse.getnurseId();
         if(nurse.getToken().equals("0")){
-            UpdateToken updateNurseToken=new UpdateToken(nurseid,getToken()+"");
+            UpdateToken updateNurseToken=new UpdateToken(nurseId,getToken()+"");
             updateNurseToken.execute();
         }
-        ChatActivity.my_nurseid=nurseid;
-        ChatActivity.my_nursename=nurse.getName();
+        ChatActivity.myNurseId=nurseId;
+        ChatActivity.myNurseName=nurse.getName();
         AdminPatientListArrayAdapter.nurse=nurse;
         Toast.makeText(getApplicationContext(),nurse.getName()+"",Toast.LENGTH_SHORT).show();
         Intent intent=new Intent(MainActivity.this,AdminMainActivity.class);
-        intent.putExtra("nurseid",nurseid);
+        intent.putExtra("nurseId",nurseId);
         startActivity(intent);
         finish();
     }
     public void nurse_Login(Nurse nurse){
-        ListArrayAdapter.ownnurse=nurse;
-        nurseid=nurse.getNurseid();
+        ListArrayAdapter.ownNurse=nurse;
+        nurseId=nurse.getnurseId();
 
         if(nurse.getToken().equals("0")){
-            UpdateToken updateNurseToken=new UpdateToken(nurseid,getToken()+"");
+            UpdateToken updateNurseToken=new UpdateToken(nurseId,getToken()+"");
             updateNurseToken.execute();
         }
-        ChatActivity.my_nurseid=nurseid;
-        ChatActivity.my_nursename=nurse.getName();
+        ChatActivity.myNurseId=nurseId;
+        ChatActivity.myNurseName=nurse.getName();
         Toast.makeText(getApplicationContext(),nurse.getName()+"님 환영합니다.",Toast.LENGTH_SHORT).show();
         Intent intent=new Intent(MainActivity.this,ChoiceRoomActivity.class);
-        intent.putExtra("nurseid",nurseid);
+        intent.putExtra("nurseId",nurseId);
         startActivity(intent);
         finish();
     }

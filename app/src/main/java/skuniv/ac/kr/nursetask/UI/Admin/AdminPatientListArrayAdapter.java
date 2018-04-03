@@ -36,10 +36,10 @@ import skuniv.ac.kr.nursetask.R;
 
 public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
     public AdminPatientsListFragment adminPatientsListFragment;
-    String imageUrl = "http://117.17.142.135:8080/img/";
+    String imageUrl = "http://117.17.142.133:8080/img/";
     Bitmap bmImg;
-    String nurse_list_token="";
-    Patient fcm_patinet;
+    String nurseListToken="";
+    Patient fcmPatinet;
     public static Nurse nurse;
 
     private LayoutInflater layoutInflater;
@@ -71,8 +71,8 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         view.findViewById(R.id.deletePatientBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fcm_patinet=patient;
-                DeletePatient deletePatient=new DeletePatient(patient.getPatientcode());
+                fcmPatinet=patient;
+                DeletePatient deletePatient=new DeletePatient(patient.getPatientCode());
                 deletePatient.execute();
             }
         });
@@ -88,15 +88,15 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         }
     }
     private class DeletePatient extends SafeAsyncTask<String> {
-        String patientcode="";
-        public DeletePatient(String patientcode){
-            this.patientcode=patientcode;
+        String patientCode="";
+        public DeletePatient(String patientCode){
+            this.patientCode=patientCode;
         }
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/deletePatient";
-            String query="patientcode="+patientcode;
+            String url="http://117.17.142.133:8080/nurse/delete-patient";
+            String query="patientCode="+patientCode;
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -121,7 +121,7 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         protected void onSuccess(String result) throws Exception {
             super.onSuccess(result);
             adminPatientsListFragment=GetSet.getAdminPatientsListFragment();
-            adminPatientsListFragment.realTimeupdate();
+            adminPatientsListFragment.realTimeUpdate();
             new FatchNurseListAsyncTask().execute();
 
         }
@@ -141,13 +141,13 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         protected void onSuccess(List<Nurse> Nurses) throws Exception {
             super.onSuccess(Nurses);
             for(Nurse nurse:Nurses){
-                if(nurse_list_token.equals("")){
-                    nurse_list_token+=nurse.getToken();
+                if(nurseListToken.equals("")){
+                    nurseListToken+=nurse.getToken();
                 }else{
-                    nurse_list_token+=","+nurse.getToken();
+                    nurseListToken+=","+nurse.getToken();
                 }
             }
-            Fcm fcm=new Fcm(nurse.getNurseid(),"Patient_delete - > "+fcm_patinet.getName(),nurse_list_token,nurse.getName());
+            Fcm fcm=new Fcm(nurse.getnurseId(),"Patient_delete - > "+fcmPatinet.getName(),nurseListToken,nurse.getName());
             fcm.execute();
         }
     }

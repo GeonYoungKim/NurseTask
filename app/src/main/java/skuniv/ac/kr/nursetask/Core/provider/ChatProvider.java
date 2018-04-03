@@ -6,20 +6,19 @@ import com.google.gson.GsonBuilder;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-import skuniv.ac.kr.nursetask.Core.domain.Chat;
-import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.domain.ChatVo;
 
 /**
  * Created by gunyoungkim on 2017-09-27.
  */
 public class ChatProvider {
-    int roomno;
-    public ChatProvider(int roomno){
-        this.roomno=roomno;
+    int roomNo;
+    public ChatProvider(int roomNo){
+        this.roomNo=roomNo;
     }
-    public List<Chat> FatchChatList(){
-        String url="http://117.17.142.135:8080/nurse/chatList";
-        String query="roomno="+roomno;
+    public List<ChatVo> FatchChatList(){
+        String url="http://117.17.142.133:8080/nurse/chat-list";
+        String query="roomNo="+roomNo;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );
         request.connectTimeout( 1000 );
@@ -35,5 +34,5 @@ public class ChatProvider {
         }
         return result.getData();
     }
-    private class JSONResultFatchChatList extends JsonResult<List<Chat>>{}
+    private class JSONResultFatchChatList extends JsonResult<List<ChatVo>>{}
 }

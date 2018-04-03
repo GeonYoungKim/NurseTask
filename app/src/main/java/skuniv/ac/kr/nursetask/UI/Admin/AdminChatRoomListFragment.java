@@ -38,9 +38,9 @@ import skuniv.ac.kr.nursetask.UI.Nurse.ChatRoomListFragment;
 
 public class AdminChatRoomListFragment extends ListFragment {
     private AdminRoomsListArrayAdapter adminRoomsListArrayAdapter;
-    Map<Integer, Room> roommap;
-    int roomno;
-    String receivemessage;
+    Map<Integer, Room> roomMap;
+    int roomNo;
+    String receiveMessage;
     List<Room> Rooms;
 
     public AdminRoomsListArrayAdapter getAdminRoomsListArrayAdapter() {
@@ -68,7 +68,7 @@ public class AdminChatRoomListFragment extends ListFragment {
         return inflater.inflate(R.layout.fragment_chatroom_list, container, false);
     }
 
-    public void realTimeupdate() {
+    public void realTimeUpdate() {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.detach(AdminChatRoomListFragment.this).attach(AdminChatRoomListFragment.this).commitAllowingStateLoss();
     }
@@ -77,13 +77,13 @@ public class AdminChatRoomListFragment extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ListView lv = ((ListView) getView().findViewById(android.R.id.list));
-        roommap = new HashMap<Integer, Room>();
+        roomMap = new HashMap<Integer, Room>();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                roomno = Rooms.get(position).getRoomno();
+                roomNo = Rooms.get(position).getRoomNo();
                 Intent intent = new Intent(getContext(), ChatActivity.class);
-                intent.putExtra("roomno", roomno);
+                intent.putExtra("roomNo", roomNo);
                 getContext().startActivity(intent);
             }
         });
@@ -94,7 +94,7 @@ public class AdminChatRoomListFragment extends ListFragment {
     public class FatchAdminRoomListAsyncTask extends SafeAsyncTask<List<Room>> {
         @Override
         public List<Room> call() throws Exception {
-            RoomProvider roomProvider = new RoomProvider(AdminListArrayAdapter.ownnurse.getNurseid());
+            RoomProvider roomProvider = new RoomProvider(AdminListArrayAdapter.ownNurse.getnurseId());
             Rooms = roomProvider.FatchRoomList();
             return Rooms;
         }
@@ -109,7 +109,7 @@ public class AdminChatRoomListFragment extends ListFragment {
         protected void onSuccess(List<Room> Rooms) throws Exception {
             super.onSuccess(Rooms);
             for (Room room : Rooms) {
-                roommap.put(room.getRoomno(), room);
+                roomMap.put(room.getRoomNo(), room);
                 System.out.println(room);
             }
             adminRoomsListArrayAdapter.add(Rooms);

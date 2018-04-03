@@ -71,8 +71,8 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/insertInChargePatient";
-            String query="nurseId="+nurse.getNurseid()+"&patientcode="+checkedPatient;
+            String url="http://117.17.142.133:8080/nurse/insert-incharge-patient";
+            String query="nurseId="+nurse.getnurseId()+"&patientCode="+checkedPatient;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -96,7 +96,7 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         protected void onSuccess(String result) throws Exception {
             super.onSuccess(result);
             if("good".equals(result)){
-                Toast.makeText(getApplicationContext(),nurse.getNurseid()+"님에게 담당환자를 부여하였습니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),nurse.getnurseId()+"님에게 담당환자를 부여하였습니다.",Toast.LENGTH_SHORT).show();
                 finish();
             }
             Fcm fcm=new Fcm("admin","incharge_patient_update",nurse.getToken()+"","");
@@ -124,7 +124,7 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
 
             convertView=getLayoutInflater().inflate(R.layout.row_admin_incharge_patient_list,null);
-            patientsCheckMap.put(patients.get(position).getPatientcode(),((CheckBox)convertView.findViewById(R.id.InchargeSelectedCheckBox)));
+            patientsCheckMap.put(patients.get(position).getPatientCode(),((CheckBox)convertView.findViewById(R.id.InchargeSelectedCheckBox)));
             ((TextView)convertView.findViewById(R.id.inchargePatientName)).setText(patients.get(position).getName());
             return convertView;
         }

@@ -16,7 +16,7 @@ import skuniv.ac.kr.nursetask.Core.domain.Patient;
 import skuniv.ac.kr.nursetask.R;
 
 public class RoomActivity extends AppCompatActivity implements View.OnClickListener{
-    private List<Patient> roompatientlist;
+    private List<Patient> roomPatientList;
     private Button patientButtons[];
     public static Map<Integer,Patient> seats;
 
@@ -26,7 +26,7 @@ public class RoomActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_room);
 
         Intent intent = getIntent();
-        roompatientlist = (List<Patient>) intent.getExtras().get("roompatientlist");
+        roomPatientList = (List<Patient>) intent.getExtras().get("roomPatientList");
 
         patientButtons = new Button[]{(Button) findViewById(R.id.one), (Button) findViewById(R.id.two), (Button) findViewById(R.id.three), (Button) findViewById(R.id.four)
                 , (Button) findViewById(R.id.five), (Button) findViewById(R.id.six), (Button) findViewById(R.id.seven), (Button) findViewById(R.id.eight)};
@@ -39,7 +39,7 @@ public class RoomActivity extends AppCompatActivity implements View.OnClickListe
 
         seats=new HashMap<Integer,Patient>();
 
-        for (Patient patient : roompatientlist) {
+        for (Patient patient : roomPatientList) {
             seats.put(Integer.parseInt(patient.getRoom().trim().charAt(4)+""),patient);
         }
         Iterator<Integer> keys = seats.keySet().iterator();

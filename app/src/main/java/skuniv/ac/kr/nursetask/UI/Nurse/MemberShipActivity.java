@@ -64,7 +64,7 @@ public class MemberShipActivity extends AppCompatActivity {
             }
         });
 
-        membershipContents=new EditText[]{(EditText)findViewById(R.id.memberShip_nurseID),(EditText)findViewById(R.id.memberShip_nursePassword),(EditText)findViewById(R.id.memberShip_nurseName),
+        membershipContents=new EditText[]{(EditText)findViewById(R.id.memberShip_nurseId),(EditText)findViewById(R.id.memberShip_nursePassword),(EditText)findViewById(R.id.memberShip_nurseName),
                 (EditText)findViewById(R.id.memberShip_nurseBirth),(EditText)findViewById(R.id.memberShip_nursePhone),(EditText)findViewById(R.id.memberShip_Address)};
 
 
@@ -84,7 +84,7 @@ public class MemberShipActivity extends AppCompatActivity {
         @Override
         public Nurse call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/insertNurse";
+            String url="http://117.17.142.133:8080/nurse/insert-nurse";
             String query="id="+getMemberShipContents[0]+"&password="+getMemberShipContents[1]+"&name="+getMemberShipContents[2]+
                     "&birth="+getMemberShipContents[3]+"&phone="+getMemberShipContents[4]+"&address="+getMemberShipContents[5]+"&image="+imageFileName;
             HttpRequest request=HttpRequest.post(url);
@@ -113,7 +113,7 @@ public class MemberShipActivity extends AppCompatActivity {
             if(nurse==null){
                 Toast.makeText(getApplicationContext(),"회원가입에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(getApplicationContext(),"회원가입에 성공하셨습니다."+nurse.getNurseid()+"님",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"회원가입에 성공하셨습니다."+nurse.getnurseId()+"님",Toast.LENGTH_SHORT).show();
                 finish();
             }
 
@@ -236,7 +236,7 @@ public class MemberShipActivity extends AppCompatActivity {
         }
     }
     public void uploadFile(String filePath){
-        String url = "http://117.17.142.135:8080/nurse/photo";
+        String url = "http://117.17.142.133:8080/nurse/photo";
         try {
             UploadFile uploadFile = new UploadFile(MemberShipActivity.this, new AsyncResponse() {
                 @Override

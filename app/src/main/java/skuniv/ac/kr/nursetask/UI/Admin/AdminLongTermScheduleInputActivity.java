@@ -2,18 +2,15 @@ package skuniv.ac.kr.nursetask.UI.Admin;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
-import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 import java.util.Calendar;
@@ -22,13 +19,12 @@ import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.R;
-import skuniv.ac.kr.nursetask.UI.Nurse.MainActivity;
 
 public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
 
-    Button start_btn;
-    Button end_btn;
-    EditText content_et;
+    Button startBtn;
+    Button endBtn;
+    EditText contentEdit;
     Nurse nurse;
 
 
@@ -40,10 +36,10 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         Intent intent=getIntent();
         nurse=(Nurse) intent.getExtras().get("nurse");
 
-        start_btn=(Button)findViewById(R.id.long_term_schedule_start_btn);
-        end_btn=(Button)findViewById(R.id.long_term_schedule_end_btn);
-        content_et=(EditText)findViewById(R.id.long_term_schedule_content_et);
-        content_et.setOnClickListener(new View.OnClickListener() {
+        startBtn =(Button)findViewById(R.id.long_term_schedule_start_btn);
+        endBtn =(Button)findViewById(R.id.long_term_schedule_end_btn);
+        contentEdit =(EditText)findViewById(R.id.long_term_schedule_contentEdit);
+        contentEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(),"내용을 입력해주세요",Toast.LENGTH_SHORT).show();
@@ -59,7 +55,7 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         findViewById(R.id.long_term_schedule_store_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new long_term_schedule_insert().execute();
+                new LongTermScheduleInsert().execute();
                 Toast.makeText(getApplicationContext(),"스케쥴을 부여 하였습니다.",Toast.LENGTH_SHORT).show();
 
             }
@@ -67,12 +63,12 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
 
 
     }
-    private class long_term_schedule_insert extends SafeAsyncTask<String> {
+    private class LongTermScheduleInsert extends SafeAsyncTask<String> {
         @Override
         public String call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/long_term_schedule_insert";
-            String query="startday="+start_btn.getText()+"&endday="+end_btn.getText()+"&content="+content_et.getText()+"&nurseid="+nurse.getNurseid();
+            String url="http://117.17.142.133:8080/nurse/long-term-schedule-insert";
+            String query="startDay="+ startBtn.getText()+"&endDay="+ endBtn.getText()+"&content="+ contentEdit.getText()+"&nurseId="+nurse.getnurseId();
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -96,11 +92,11 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         protected void onSuccess(String str) throws Exception {
             super.onSuccess(str);
             finish();
-            Fcm fcm=new Fcm("update_schedule-"+nurse.getNurseid(),"confirm_schedule",nurse.getToken()+"","");
+            Fcm fcm=new Fcm("update_schedule-"+nurse.getnurseId(),"confirm_schedule",nurse.getToken()+"","");
             fcm.execute();
         }
     }
-    public void dialog_start_date_picker(View view){
+    public void dialogStartDatePicker(View view){
         Calendar calendar=Calendar.getInstance();
         DatePickerDialog dpd=new DatePickerDialog(
                 this, new DatePickerDialog.OnDateSetListener() {
@@ -112,7 +108,7 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
         );
         dpd.show();
     }
-    public void dialog_end_date_picker(View view){
+    public void dialogEndDatePicker(View view){
         Calendar calendar=Calendar.getInstance();
         DatePickerDialog dpd=new DatePickerDialog(
                 this, new DatePickerDialog.OnDateSetListener() {

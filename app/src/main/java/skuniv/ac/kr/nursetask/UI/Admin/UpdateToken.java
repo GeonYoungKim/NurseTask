@@ -11,18 +11,18 @@ import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
  */
 
 public class UpdateToken extends SafeAsyncTask<String> {
-    String nurseid;
+    String nurseId;
     String token;
 
-    public UpdateToken(String nurseid,String token){
-        this.nurseid=nurseid;
+    public UpdateToken(String nurseId,String token){
+        this.nurseId=nurseId;
         this.token=token;
     }
     @Override
     public String call() throws Exception {
 
-        String url="http://117.17.142.135:8080/nurse/update_token";
-        String query="nurseid="+this.nurseid+"&token="+this.token;
+        String url="http://117.17.142.133:8080/nurse/update-token";
+        String query="nurseId="+this.nurseId+"&token="+this.token;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );
         request.connectTimeout( 1000 );
@@ -44,7 +44,7 @@ public class UpdateToken extends SafeAsyncTask<String> {
     @Override
     protected void onSuccess(String str) throws Exception {
         super.onSuccess(str);
-        UpdateNurseRoomToken updateNurseRoomToken=new UpdateNurseRoomToken(this.nurseid,this.token);
+        UpdateNurseRoomToken updateNurseRoomToken=new UpdateNurseRoomToken(this.nurseId,this.token);
         updateNurseRoomToken.execute();
 
     }

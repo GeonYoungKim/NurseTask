@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder;
 import java.net.HttpURLConnection;
 import java.util.List;
 
-import skuniv.ac.kr.nursetask.Core.domain.Chat;
 import skuniv.ac.kr.nursetask.Core.domain.Room;
 
 /**
@@ -14,13 +13,13 @@ import skuniv.ac.kr.nursetask.Core.domain.Room;
  */
 
 public class RoomProvider {
-    String nurseid;
-    public RoomProvider(String nurseid){
-        this.nurseid=nurseid;
+    String nurseId;
+    public RoomProvider(String nurseId){
+        this.nurseId=nurseId;
     }
     public List<Room> FatchRoomList(){
-        String url="http://117.17.142.135:8080/nurse/roomList";
-        String query="nurseid="+nurseid;
+        String url="http://117.17.142.133:8080/nurse/room-list";
+        String query="nurseId="+nurseId;
         HttpRequest request=HttpRequest.post(url);
         request.accept( HttpRequest.CONTENT_TYPE_JSON );
         request.connectTimeout( 1000 );

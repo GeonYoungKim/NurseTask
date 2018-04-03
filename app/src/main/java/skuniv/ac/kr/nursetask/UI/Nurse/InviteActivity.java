@@ -41,11 +41,11 @@ public class InviteActivity extends ListActivity {
     Map<Nurse,CheckBox> nursesCheckMap;
     String checkedNurse;
     String checkedNurseId;
-    int roomno;
+    int roomNo;
     List<Nurse> nurses;
     ListView lv;
-    String roomname;
-    String[] roomnames;
+    String roomName;
+    String[] roomNames;
     boolean exist;
     int count;
     Intent intent;
@@ -58,8 +58,8 @@ public class InviteActivity extends ListActivity {
         checkedNurse="";
         checkedNurseId="";
         intent=getIntent();
-        roomno=(int)intent.getExtras().get("roomno");
-        System.out.println(roomno);
+        roomNo=(int)intent.getExtras().get("roomNo");
+        System.out.println(roomNo);
         new getRoom().execute();
 
         lv= (ListView) findViewById(android.R.id.list);
@@ -72,10 +72,10 @@ public class InviteActivity extends ListActivity {
                     if(nursesCheckMap.get(key).isChecked()==true){
                         count++;
                         if(checkedNurse.equals("")){
-                            checkedNurseId+=key.getNurseid();
+                            checkedNurseId+=key.getnurseId();
                             checkedNurse+=key.getName()+"님";
                         }else{
-                            checkedNurseId+=","+key.getNurseid();
+                            checkedNurseId+=","+key.getnurseId();
                             checkedNurse+=","+key.getName()+"님";
                         }
                     }
@@ -87,8 +87,8 @@ public class InviteActivity extends ListActivity {
     private class UpdateRoom extends SafeAsyncTask<String> {
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/updateRoom";
-            String query="roomno="+roomno+"&roomname="+checkedNurse+"&count="+count+"&strNurseId="+checkedNurseId;
+            String url="http://117.17.142.133:8080/nurse/update-room";
+            String query="roomNo="+roomNo+"&roomName="+checkedNurse+"&count="+count+"&strNurseId="+checkedNurseId;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -113,17 +113,17 @@ public class InviteActivity extends ListActivity {
             chatRoomListFragment= GetSet.getChatRoomListFragment();
             adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
             if(chatRoomListFragment!=null){
-                chatRoomListFragment.realTimeupdate();
+                chatRoomListFragment.realTimeUpdate();
             }
             if(adminChatRoomListFragment!=null){
-                adminChatRoomListFragment.realTimeupdate();
+                adminChatRoomListFragment.realTimeUpdate();
             }
-            ChatActivity.rooms_id=checkedNurseId;
+            ChatActivity.roomsId=checkedNurseId;
             checkedNurseId=checkedNurseId.replaceAll(",","-");
-            intent.putExtra("rooms_id",checkedNurseId);
+            intent.putExtra("roomsId",checkedNurseId);
             setResult(Activity.RESULT_OK,intent);
 
-            System.out.println("----------------------"+ChatActivity.rooms_id);
+            System.out.println("----------------------"+ChatActivity.roomsId);
             finish();
         }
     }
@@ -131,8 +131,8 @@ public class InviteActivity extends ListActivity {
         @Override
         public Room call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/getRoom2";
-            String query="roomno="+roomno;
+            String url="http://117.17.142.133:8080/nurse/getRoom2";
+            String query="roomNo="+roomNo;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -156,11 +156,11 @@ public class InviteActivity extends ListActivity {
         @Override
         protected void onSuccess(Room room) throws Exception {
             super.onSuccess(room);
-            roomname=room.getRoomname();
-            roomname=roomname.replaceAll("님","");
-            roomnames=roomname.split(",");
-            for(int i=0;i<roomnames.length;i++){
-                System.out.println(roomnames[i]);
+            roomName=room.getroomName();
+            roomName=roomName.replaceAll("님","");
+            roomNames=roomName.split(",");
+            for(int i=0;i<roomNames.length;i++){
+                System.out.println(roomNames[i]);
             }
             new FatchInviteListAsyncTask().execute();
         }
@@ -190,8 +190,8 @@ public class InviteActivity extends ListActivity {
             nursesCheckMap.put(nurses.get(position),((CheckBox)convertView.findViewById(R.id.InchargeSelectedCheckBox)));
             ((TextView)convertView.findViewById(R.id.inchargePatientName)).setText(nurses.get(position).getName());
             exist=true;
-            for(int i=0;i<roomnames.length;i++){
-                if(nurses.get(position).getName().equals(roomnames[i])){
+            for(int i=0;i<roomNames.length;i++){
+                if(nurses.get(position).getName().equals(roomNames[i])){
                     exist=false;
                     break;
                 }

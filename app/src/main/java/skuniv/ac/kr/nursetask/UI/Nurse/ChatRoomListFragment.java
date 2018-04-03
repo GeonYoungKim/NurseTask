@@ -40,10 +40,10 @@ import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
  */
 
 public class ChatRoomListFragment extends ListFragment {
-    String receivemessage;
+    String receiveMessage;
     public AdminRoomsListArrayAdapter adminRoomsListArrayAdapter;
-    Map<Integer,Room> roommap;
-    int roomno;
+    Map<Integer,Room> roomMap;
+    int roomNo;
     public List<Room> Rooms;
 
     public AdminRoomsListArrayAdapter getAdminRoomsListArrayAdapter() {
@@ -76,19 +76,19 @@ public class ChatRoomListFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
         ListView lv=((ListView)getView().findViewById(android.R.id.list));
 
-        roommap=new HashMap<Integer,Room>();
+        roomMap=new HashMap<Integer,Room>();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                roomno=Rooms.get(position).getRoomno();
+                roomNo=Rooms.get(position).getRoomNo();
                 Intent intent=new Intent(getContext(),ChatActivity.class);
-                intent.putExtra("roomno",roomno);
+                intent.putExtra("roomNo",roomNo);
                 getContext().startActivity(intent);
             }
         });
         new FatchAdminRoomListAsyncTask().execute();
     }
-    public void realTimeupdate(){
+    public void realTimeUpdate(){
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.detach(ChatRoomListFragment.this).attach(ChatRoomListFragment.this).commitAllowingStateLoss();
     }
@@ -96,7 +96,7 @@ public class ChatRoomListFragment extends ListFragment {
 
         @Override
         public List<Room> call() throws Exception {
-            RoomProvider roomProvider=new RoomProvider(ListArrayAdapter.ownnurse.getNurseid());
+            RoomProvider roomProvider=new RoomProvider(ListArrayAdapter.ownNurse.getnurseId());
             Rooms=roomProvider.FatchRoomList();
             return Rooms;
         }
@@ -110,7 +110,7 @@ public class ChatRoomListFragment extends ListFragment {
             super.onSuccess(Rooms);
 
             for(Room room:Rooms){
-                roommap.put(room.getRoomno(),room);
+                roomMap.put(room.getRoomNo(),room);
 
                 System.out.println(room);
             }

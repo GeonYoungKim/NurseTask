@@ -89,11 +89,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 e.printStackTrace();
             }
             try{
-                adminChatRoomListFragment.realTimeupdate();
+                adminChatRoomListFragment.realTimeUpdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }try{
-                chatRoomListFragment.realTimeupdate();
+                chatRoomListFragment.realTimeUpdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }
@@ -109,7 +109,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 GetScheduleNurse getScheduleNurse=new GetScheduleNurse(schedules[1]);
                 getScheduleNurse.execute();
             }else if(remoteMessage.getNotification().getBody().equals("updated_nurse")){
-                if(remoteMessage.getNotification().getClickAction().equals(getNurse().getNurseid())){
+                if(remoteMessage.getNotification().getClickAction().equals(getNurse().getnurseId())){
                     System.out.println("내가 로그인한 것");
                 }else{
                     sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
@@ -117,12 +117,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 adminNursesListFragment=GetSet.getAdminNursesListFragment();
                 nurseListFragment=GetSet.getNurseListFragment();
                 try{
-                    nurseListFragment.realTimeupdate();
+                    nurseListFragment.realTimeUpdate();
                 }catch (NullPointerException e){
                     e.printStackTrace();
                 }
                 try{
-                    adminNursesListFragment.realTimeupdate();
+                    adminNursesListFragment.realTimeUpdate();
                 }catch (NullPointerException e){
                     e.printStackTrace();
                 }
@@ -131,7 +131,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }else if("confirm_long_schedule".equals(msg)){
                 sendNotification(remoteMessage.getNotification().getTitle(),msg);
             }else{
-                    if(remoteMessage.getNotification().getClickAction().equals(getNurse().getNurseid())){
+                    if(remoteMessage.getNotification().getClickAction().equals(getNurse().getnurseId())){
                         Log.d("my message","내가 보낸 메세지");
                     }else {
                         Log.d("emulator","emulator");
@@ -140,7 +140,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         }else{
                             String sp[]=msg.split("-");
                             sendNotification(remoteMessage.getNotification().getTitle(),sp[1]);
-                            getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getNurseid());
+                            getRoomFlag getRoomFlag=new getRoomFlag(sp[0],getNurse().getnurseId());
                             getRoomFlag.execute();
                         }
 
@@ -185,7 +185,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         @Override
         public Nurse call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/today_schedule_show";
+            String url="http://117.17.142.133:8080/nurse/today-schedule-show";
             String query="id="+id;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -210,7 +210,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         @Override
         protected void onSuccess(Nurse nurse) throws Exception {
             super.onSuccess(nurse);
-            String[] alarm_schedule_item=nurse.getTodayschedule().split(",");
+            String[] alarm_schedule_item=nurse.getTodaySchedule().split(",");
             Arrays.sort(alarm_schedule_item, String.CASE_INSENSITIVE_ORDER);
 
             AlarmNotificationReceiver.i=0;
@@ -245,16 +245,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
    private class getRoomFlag extends SafeAsyncTask<String> {
-        String roomno;
-       String nurseid;
-       public getRoomFlag(String roomno,String nurseid){
-           this.roomno=roomno;
-           this.nurseid=nurseid;
+        String roomNo;
+       String nurseId;
+       public getRoomFlag(String roomNo,String nurseId){
+           this.roomNo=roomNo;
+           this.nurseId=nurseId;
        }
         @Override
         public String call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/getRoomFlag";
-            String query="roomno="+roomno+"&nurseid="+nurseid;
+            String url="http://117.17.142.133:8080/nurse/get-room-flag";
+            String query="roomNo="+roomNo+"&nurseId="+nurseId;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
             request.connectTimeout( 1000 );
@@ -277,11 +277,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         protected void onSuccess(String room) throws Exception {
             super.onSuccess(room);
             try{
-                adminChatRoomListFragment.realTimeupdate();
+                adminChatRoomListFragment.realTimeUpdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }try{
-                chatRoomListFragment.realTimeupdate();
+                chatRoomListFragment.realTimeUpdate();
             }catch (NullPointerException e){
                 e.printStackTrace();
             }

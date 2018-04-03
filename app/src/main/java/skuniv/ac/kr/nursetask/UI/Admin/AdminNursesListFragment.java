@@ -51,7 +51,7 @@ public class AdminNursesListFragment extends ListFragment {
         ListView lv=((ListView)getView().findViewById(android.R.id.list));
 
     }
-    public void realTimeupdate(){
+    public void realTimeUpdate(){
         FragmentTransaction ft=getFragmentManager().beginTransaction();
         ft.detach(AdminNursesListFragment.this).attach(AdminNursesListFragment.this).commitAllowingStateLoss();
     }

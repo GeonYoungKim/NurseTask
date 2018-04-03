@@ -27,9 +27,9 @@ import skuniv.ac.kr.nursetask.R;
 public class AdminPatientUpdateActivity extends AppCompatActivity {
     public AdminPatientsListFragment adminPatientsListFragment;
     Patient patient;
-    EditText[] PatientUpdateContents;
-    String[] getPatientUpdateContents;
-    String nurse_list_token="";
+    EditText[] patientUpdateContents;
+    String[] getpatientUpdateContents;
+    String nurseListToken="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,21 +38,21 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
         Intent intent=getIntent();
 
         patient=(Patient)intent.getExtras().get("patient");
-        PatientUpdateContents=new EditText[]{(EditText)findViewById(R.id.patientUpdate_patientName),(EditText)findViewById(R.id.patientUpdate_patientBirth),
+        patientUpdateContents=new EditText[]{(EditText)findViewById(R.id.patientUpdate_patientName),(EditText)findViewById(R.id.patientUpdate_patientBirth),
                 (EditText)findViewById(R.id.patientUpdate_patientSex),(EditText)findViewById(R.id.patientUpdate_patientDisease),(EditText)findViewById(R.id.patientUpdate_patientPeriod),
                 (EditText)findViewById(R.id.patientUpdate_patientNote),(EditText)findViewById(R.id.patientUpdate_patientRoom)};
 
 
-        getPatientUpdateContents=new String[]{patient.getName(),patient.getBirth(),patient.getSex(),patient.getDisease(),patient.getPeriod(),patient.getNote(),patient.getRoom()};
-        for(int i=0;i<PatientUpdateContents.length;i++){
-            PatientUpdateContents[i].setHint(getPatientUpdateContents[i]);
+        getpatientUpdateContents=new String[]{patient.getName(),patient.getBirth(),patient.getSex(),patient.getDisease(),patient.getPeriod(),patient.getNote(),patient.getRoom()};
+        for(int i=0;i<patientUpdateContents.length;i++){
+            patientUpdateContents[i].setHint(getpatientUpdateContents[i]);
         }
 
         findViewById(R.id.patientUpdate_updateBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i=0;i<PatientUpdateContents.length;i++){
-                    getPatientUpdateContents[i]=PatientUpdateContents[i].getText()+"";
+                for(int i=0;i<patientUpdateContents.length;i++){
+                    getpatientUpdateContents[i]=patientUpdateContents[i].getText()+"";
                 }
                 new UpdatePatient().execute();
             }
@@ -68,10 +68,10 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
         @Override
         public Patient call() throws Exception {
 
-            String url="http://117.17.142.135:8080/nurse/updatePatient";
-            String query="patientcode="+patient.getPatientcode()+"&name="+getPatientUpdateContents[0]+"&birth="+getPatientUpdateContents[1]+
-                    "&sex="+getPatientUpdateContents[2]+"&disease="+getPatientUpdateContents[3]+"&period="+getPatientUpdateContents[4]+"&note="+getPatientUpdateContents[5]
-                    +"&room="+getPatientUpdateContents[6];
+            String url="http://117.17.142.133:8080/nurse/update-patient";
+            String query="patientCode="+patient.getPatientCode()+"&name="+getpatientUpdateContents[0]+"&birth="+getpatientUpdateContents[1]+
+                    "&sex="+getpatientUpdateContents[2]+"&disease="+getpatientUpdateContents[3]+"&period="+getpatientUpdateContents[4]+"&note="+getpatientUpdateContents[5]
+                    +"&room="+getpatientUpdateContents[6];
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -102,7 +102,7 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
             }else{
                 Toast.makeText(getApplicationContext(),"환자수정에 성공하셨습니다.",Toast.LENGTH_SHORT).show();
                 adminPatientsListFragment=GetSet.getAdminPatientsListFragment();
-                adminPatientsListFragment.realTimeupdate();
+                adminPatientsListFragment.realTimeUpdate();
 
                 new FatchNurseListAsyncTask().execute();
                 finish();
@@ -126,13 +126,13 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
         protected void onSuccess(List<Nurse> Nurses) throws Exception {
             super.onSuccess(Nurses);
             for(Nurse nurse:Nurses){
-                if(nurse_list_token.equals("")){
-                    nurse_list_token+=nurse.getToken();
+                if(nurseListToken.equals("")){
+                    nurseListToken+=nurse.getToken();
                 }else{
-                    nurse_list_token+=","+nurse.getToken();
+                    nurseListToken+=","+nurse.getToken();
                 }
             }
-            Fcm fcm=new Fcm(getNurse().getName(),"Patient_update - > "+patient.getName(),nurse_list_token,getNurse().getNurseid());
+            Fcm fcm=new Fcm(getNurse().getName(),"Patient_update - > "+patient.getName(),nurseListToken,getNurse().getnurseId());
             fcm.execute();
         }
     }

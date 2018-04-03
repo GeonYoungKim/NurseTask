@@ -3,7 +3,6 @@ package skuniv.ac.kr.nursetask.UI.Nurse;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,31 +12,25 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.GsonBuilder;
 
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
-import skuniv.ac.kr.nursetask.Core.domain.LongTermSchedule;
-import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.LongTermScheduleVo;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 
-import static skuniv.ac.kr.nursetask.UI.Nurse.RoomActivity.seats;
-
 public class LongTermScheduleShowActivity extends ListActivity {
-    String nurseid;
-    TextView start_day;
-    TextView end_day;
-    Button content_btn;
+    String nurseId;
+    TextView startDay;
+    TextView endDay;
+    Button contentBtn;
     ListView lv;
-    List<LongTermSchedule> longTermScheduleList;
+    List<LongTermScheduleVo> longTermScheduleVoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +38,14 @@ public class LongTermScheduleShowActivity extends ListActivity {
         setContentView(R.layout.activity_long_term_schedule_show);
 
         Intent intent=getIntent();
-        nurseid=(String)intent.getExtras().get("nurseid");
+        nurseId=(String)intent.getExtras().get("nurseId");
 
         lv= (ListView) findViewById(android.R.id.list);
 
-        start_day=(TextView)findViewById(R.id.long_term_schedule_startday);
-        end_day=(TextView)findViewById(R.id.long_term_schedule_endday);
+        startDay=(TextView)findViewById(R.id.long_term_schedule_startday);
+        endDay=(TextView)findViewById(R.id.long_term_schedule_endday);
 
-        content_btn=(Button)findViewById(R.id.long_term_schedule_content_btn);
+        contentBtn=(Button)findViewById(R.id.long_term_schedule_contentBtn);
         findViewById(R.id.long_term_schedule_show_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +61,7 @@ public class LongTermScheduleShowActivity extends ListActivity {
         LayoutInflater layoutInflater;
         @Override
         public int getCount() {
-            return longTermScheduleList.size();
+            return longTermScheduleVoList.size();
         }
         @Override
         public Object getItem(int position) {
@@ -84,16 +77,16 @@ public class LongTermScheduleShowActivity extends ListActivity {
         public View getView(final int position, View convertView, ViewGroup parent) {
 
             convertView=getLayoutInflater().inflate(R.layout.row_long_term_schedule_show_list,null);
-            ((TextView)convertView.findViewById(R.id.long_term_schedule_startday)).setText(longTermScheduleList.get(position).getStartday());
-            ((TextView)convertView.findViewById(R.id.long_term_schedule_endday)).setText(longTermScheduleList.get(position).getEndday());
+            ((TextView)convertView.findViewById(R.id.long_term_schedule_startday)).setText(longTermScheduleVoList.get(position).getStartDay());
+            ((TextView)convertView.findViewById(R.id.long_term_schedule_endday)).setText(longTermScheduleVoList.get(position).getEndDay());
 
-            ((Button)convertView.findViewById(R.id.long_term_schedule_content_btn)).setOnClickListener(new View.OnClickListener() {
+            ((Button)convertView.findViewById(R.id.long_term_schedule_contentBtn)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     new android.app.AlertDialog.Builder(LongTermScheduleShowActivity.this).
                             setTitle( "Schedule" ).
                             setIcon( android.R.drawable.ic_dialog_alert ).
-                            setMessage( "content : "+longTermScheduleList.get(position).getContent()+"\n"
+                            setMessage( "content : "+ longTermScheduleVoList.get(position).getContent()+"\n"
 
                             ).
                             setPositiveButton( "예", new DialogInterface.OnClickListener() {
@@ -109,12 +102,12 @@ public class LongTermScheduleShowActivity extends ListActivity {
             return convertView;
         }
     }
-    public class FatchLongTermScheduleShowAsyncTask extends SafeAsyncTask<List<LongTermSchedule>> {
+    public class FatchLongTermScheduleShowAsyncTask extends SafeAsyncTask<List<LongTermScheduleVo>> {
 
         @Override
-        public List<LongTermSchedule> call() throws Exception {
-            String url="http://117.17.142.135:8080/nurse/long_term_schedule_show";
-            String query="nurseid="+nurseid;
+        public List<LongTermScheduleVo> call() throws Exception {
+            String url="http://117.17.142.133:8080/nurse/long-term-schedule-show";
+            String query="nurseId="+nurseId;
 
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
@@ -128,8 +121,8 @@ public class LongTermScheduleShowActivity extends ListActivity {
                 return null;
             }
             JSONResultFatchLongTermScheduleShow result=new GsonBuilder().create().fromJson(request.bufferedReader(),JSONResultFatchLongTermScheduleShow.class);
-            List<LongTermSchedule> longTermSchedules=result.getData();
-            return longTermSchedules;
+            List<LongTermScheduleVo> longTermScheduleVos =result.getData();
+            return longTermScheduleVos;
 
         }
         @Override
@@ -138,12 +131,12 @@ public class LongTermScheduleShowActivity extends ListActivity {
             Log.e("FatchUserListAsyncTask","error"+e);
         }
         @Override
-        protected void onSuccess(List<LongTermSchedule> longTermSchedules) throws Exception {
-            super.onSuccess(longTermSchedules);
-            longTermScheduleList=longTermSchedules;
+        protected void onSuccess(List<LongTermScheduleVo> longTermScheduleVos) throws Exception {
+            super.onSuccess(longTermScheduleVos);
+            longTermScheduleVoList = longTermScheduleVos;
             CustomAdapter customAdapter = new CustomAdapter();
             lv.setAdapter(customAdapter);
         }
     }
-    private class JSONResultFatchLongTermScheduleShow extends JsonResult<List<LongTermSchedule>> {}
+    private class JSONResultFatchLongTermScheduleShow extends JsonResult<List<LongTermScheduleVo>> {}
 }

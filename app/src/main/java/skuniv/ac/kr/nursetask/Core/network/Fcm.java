@@ -37,7 +37,7 @@ import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
         @Override
         public String call() throws Exception {
             Log.d("msg",msg);
-            String url="http://117.17.142.135:8080/nurse/fcm";
+            String url="http://117.17.142.133:8080/nurse/fcm";
             String post_data = "to_token=" + token + "&msg=" + msg + "&sender=" + sender+ "&action="+action;
             HttpRequest request=HttpRequest.post(url);
             request.accept( HttpRequest.CONTENT_TYPE_JSON );
