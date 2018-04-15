@@ -3,7 +3,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.0"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "skuniv.ac.kr.nursetask"
         minSdkVersion 23
