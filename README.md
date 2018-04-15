@@ -1,6 +1,6 @@
 # NurseTask
 
-## 병원내에서 사용할수 있도록 커뮤니티기능, 스케쥴 부여 및 확인기능, 환자 상태 기능, 담당환자 부여 및 조회기능이 있는 어플
+#### 병원내에서 사용할수 있도록 커뮤니티기능, 스케쥴 부여 및 확인기능, 환자 상태 기능, 담당환자 부여 및 조회기능이 있는 어플
 
 android(java) firebase-cloudmessaing(서버와 연결) alarmmanager service
 
