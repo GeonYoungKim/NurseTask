@@ -19,10 +19,10 @@ android(java) firebase-cloudmessaing(서버와 연결) alarmmanager service
 * 자신의 장기 단기 스케쥴 조회
 * 자신의 담당환자 조회
 
-<img src = './img/login.jpg' width = '200' height = '300'/><img src = './img/adminTabOne.jpg' width = '200' height = '300'/><img src = './img/adminTabTwo.jpg' width = '200' height = '300'/>
+<img src = './img/login.jpg' width = '300' height = '300'/><img src = './img/adminTabOne.jpg' width = '300' height = '300'/><img src = './img/adminTabTwo.jpg' width = '300' height = '300'/>
 <br/><br/><br/>
-<img src = './img/adminTabThree.jpg' width = '200' height = '300'/><img src = './img/adminTabFour.jpg' width = '200' height = '300'/><img src = './img/room.jpg' width = '200' height = '300'/>
+<img src = './img/adminTabThree.jpg' width = '300' height = '300'/><img src = './img/adminTabFour.jpg' width = '300' height = '300'/><img src = './img/room.jpg' width = '300' height = '300'/>
 <br/><br/><br/>
-<img src = './img/dialog.jpg' width = '200' height = '300'/><img src = './img/short.jpg' width = '200' height = '300'/><img src = './img/long.jpg' width = '200' height = '300'/>
+<img src = './img/dialog.jpg' width = '300' height = '300'/><img src = './img/short.jpg' width = '300' height = '300'/><img src = './img/long.jpg' width = '300' height = '300'/>
 <br/><br/><br/>
-<img src = './img/navigation.jpg' width = '200' height = '300'/><img src = './img/chat.jpg' width = '200' height = '300'/>
+<img src = './img/navigation.jpg' width = '300' height = '300'/><img src = './img/chat.jpg' width = '300' height = '300'/>
