@@ -19,3 +19,4 @@ android(java) firebase-cloudmessaing(서버와 연결) alarmmanager service
 * 자신의 장기 단기 스케쥴 조회
 * 자신의 담당환자 조회
 
+<img src = './img/login.jpg' width = '300' height = '150' /><img src = './img/room.jpg' width = '300' height = '150' />
