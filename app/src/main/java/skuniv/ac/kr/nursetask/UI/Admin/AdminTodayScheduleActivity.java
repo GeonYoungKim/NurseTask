@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -15,9 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -27,7 +30,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.Patient;
 import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
@@ -38,13 +47,12 @@ import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
 import static java.security.AccessController.getContext;
 
 public class AdminTodayScheduleActivity extends AppCompatActivity {
-    LinearLayout container;
-    EditText timeEdit;
-    EditText contentEdit;
-    int i;
-    Nurse nurse;
-    Map<EditText,EditText> todayScheduleMap;
-    String todayScheduleResult="";
+    private LinearLayout container;
+    private EditText timeEdit,contentEdit;
+    private int i;
+    private Nurse nurse;
+    private Map<EditText,EditText> todayScheduleMap;
+    private String todayScheduleResult="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,38 +115,40 @@ public class AdminTodayScheduleActivity extends AppCompatActivity {
         });
 
     }
-    private class TodayScheduleUpdate extends SafeAsyncTask<String> {
+
+    private class TodayScheduleUpdate extends AsyncTask<Void, Void, String> {
+        String answer;
         @Override
-        public String call() throws Exception {
+        protected String doInBackground(Void... params) {
 
-            String url="http://117.17.142.133:8080/nurse/today-schedule-update";
-            String query="todayScheduleResult="+todayScheduleResult+"&nurseId="+nurse.getnurseId();
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
 
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+            requestBody = new FormBody.Builder().add("todayScheduleResult",todayScheduleResult).add("nurseId",nurse.getnurseId())
+                  .build();
+
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/today-schedule-update")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                answer = response.body().toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return null;
+            Log.d("answer", ""+answer);
+            return answer;
         }
-        @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(String str) throws Exception {
-            super.onSuccess(str);
+
+        protected void onPostExecute(Patient patient) {
             finish();
 
             Fcm fcm=new Fcm("update_schedule-"+nurse.getnurseId(),"confirm_schedule",nurse.getToken()+"","");
             fcm.execute();
         }
     }
+
 }

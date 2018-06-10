@@ -10,7 +10,7 @@ import skuniv.ac.kr.nursetask.R;
 
 public class AdminScheduleChoiceActivity extends AppCompatActivity {
 
-    Nurse nurse;
+    private Nurse nurse;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -2,8 +2,10 @@ package skuniv.ac.kr.nursetask.UI.Admin;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -11,22 +13,29 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.Calendar;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.R;
+import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
 
 public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
 
-    Button startBtn;
-    Button endBtn;
-    EditText contentEdit;
-    Nurse nurse;
-
+    private Button startBtn,endBtn;
+    private EditText contentEdit;
+    private Nurse nurse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,42 +69,41 @@ public class AdminLongTermScheduleInputActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
-    private class LongTermScheduleInsert extends SafeAsyncTask<String> {
+
+    private class LongTermScheduleInsert extends AsyncTask<Void, Void, String> {
+        String answer;
         @Override
-        public String call() throws Exception {
+        protected String doInBackground(Void... params) {
 
-            String url="http://117.17.142.133:8080/nurse/long-term-schedule-insert";
-            String query="startDay="+ startBtn.getText()+"&endDay="+ endBtn.getText()+"&content="+ contentEdit.getText()+"&nurseId="+nurse.getnurseId();
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
+            requestBody = new FormBody.Builder().add("startDay",startBtn.getText().toString()).add("endDay",endBtn.getText().toString()).add("content",contentEdit.getText().toString()).add("nurseId",nurse.getnurseId()).build();
 
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/long-term-schedule-insert")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+
+                answer = response.body().toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return null;
+            Log.d("answer", ""+answer);
+            return answer;
         }
-        @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(String str) throws Exception {
-            super.onSuccess(str);
+
+        protected void onPostExecute(Room room) {
             finish();
             Fcm fcm=new Fcm("update_schedule-"+nurse.getnurseId(),"confirm_schedule",nurse.getToken()+"","");
             fcm.execute();
         }
     }
+
     public void dialogStartDatePicker(View view){
         Calendar calendar=Calendar.getInstance();
         DatePickerDialog dpd=new DatePickerDialog(

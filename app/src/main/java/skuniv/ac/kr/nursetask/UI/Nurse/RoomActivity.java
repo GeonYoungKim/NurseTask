@@ -18,7 +18,15 @@ import skuniv.ac.kr.nursetask.R;
 public class RoomActivity extends AppCompatActivity implements View.OnClickListener{
     private List<Patient> roomPatientList;
     private Button patientButtons[];
-    public static Map<Integer,Patient> seats;
+    protected Map<Integer,Patient> seats;
+
+    public Map<Integer, Patient> getSeats() {
+        return seats;
+    }
+
+    public void setSeats(Map<Integer, Patient> seats) {
+        this.seats = seats;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

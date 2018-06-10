@@ -54,13 +54,8 @@
         <receiver android:name=".UI.Admin.AlarmNotificationReceiver" />
 
         <activity android:name=".UI.Admin.AdminScheduleChoiceActivity" />
-        <activity android:name=".UI.Admin.AdminTodayScheduleActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".UI.Admin.AdminTodayScheduleActivity"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity android:name=".UI.Nurse.InchargePatientShowActivity" />
         <activity android:name=".UI.Nurse.TodayScheduleShowActivity" />
         <activity android:name=".UI.Admin.AdminLongTermScheduleInputActivity" />

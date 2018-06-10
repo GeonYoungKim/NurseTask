@@ -3,24 +3,35 @@ package skuniv.ac.kr.nursetask.UI.Admin;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Room;
+import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.back;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
@@ -35,16 +46,22 @@ import skuniv.ac.kr.nursetask.UI.Nurse.InformationActivity;
 public class AdminListArrayAdapter extends ArrayAdapter<Nurse> {
 
 
-    public AdminChatRoomListFragment adminChatRoomListFragment;
+    private  AdminChatRoomListFragment adminChatRoomListFragment;
     private LayoutInflater layoutInflater;
-    public static Nurse ownNurse;
-
-    private String data1;
-    private String data2;
-    private String roomName;
+    private  Nurse ownNurse;
+    private String data1,data2,roomName;
     private int count;
-    String imageUrl = "http://117.17.142.133:8080/img/";
-    Bitmap bmImg;
+    private String imageUrl = "http://117.17.142.133:8080/img/";
+    private Bitmap bmImg;
+
+    public Nurse getOwnNurse() {
+        return ownNurse;
+    }
+
+    public void setOwnNurse(Nurse ownNurse) {
+        this.ownNurse = ownNurse;
+    }
+
     public AdminListArrayAdapter(@NonNull Context context) {
         super(context, R.layout.row_admin_nurse_list);
         layoutInflater=LayoutInflater.from(context);
@@ -112,45 +129,41 @@ public class AdminListArrayAdapter extends ArrayAdapter<Nurse> {
             add(nurse);
         }
     }
-
-    private class InsertRoom extends SafeAsyncTask<Room> {
+    private class InsertRoom extends AsyncTask<Void, Void, Room> {
+        Room answer;
         @Override
-        public Room call() throws Exception {
+        protected Room doInBackground(Void... params) {
 
-            String url="http://117.17.142.133:8080/nurse/insert-chat-room";
-            String query="data1="+data1+"&data2="+data2+"&roomName="+roomName+"&count="+count;
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
+            requestBody = new FormBody.Builder().add("data1",data1).add("data2",data2).add("roomName",roomName).add("count",String.valueOf(count)).build();
 
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/insert-chat-room")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                Gson gson=new Gson();
+                answer = gson.fromJson(response.body().toString(),Room.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            JSONResultFatchInsertChatRoom result=new GsonBuilder().create().fromJson(request.bufferedReader(),JSONResultFatchInsertChatRoom.class);
-            Room room=result.getData();
-            return room;
+            Log.d("answer", ""+answer);
+            return answer;
         }
+
         @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(Room room) throws Exception {
-            super.onSuccess(room);
+        protected void onPostExecute(Room room) {
             System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"+room.getRoomNo());
             Intent intent=new Intent(getContext(),ChatActivity.class);
             intent.putExtra("roomNo",room.getRoomNo());
             getContext().startActivity(intent);
-            adminChatRoomListFragment= GetSet.getAdminChatRoomListFragment();
+            adminChatRoomListFragment= AdminChatRoomListFragment.getInstance();
             adminChatRoomListFragment.realTimeUpdate();
         }
     }
-    private class JSONResultFatchInsertChatRoom extends JsonResult<Room> {}
 
 }

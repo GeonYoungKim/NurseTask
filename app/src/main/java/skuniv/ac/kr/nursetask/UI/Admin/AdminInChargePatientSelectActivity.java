@@ -2,6 +2,7 @@ package skuniv.ac.kr.nursetask.UI.Admin;
 
 import android.app.ListActivity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,14 +14,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
@@ -31,11 +37,11 @@ import skuniv.ac.kr.nursetask.R;
 
 public class AdminInChargePatientSelectActivity extends ListActivity {
 
-    Map<String,CheckBox> patientsCheckMap;
-    String checkedPatient;
-    Nurse nurse;
-    List<Patient> patients;
-    ListView lv;
+    private Map<String,CheckBox> patientsCheckMap;
+    private String checkedPatient;
+    private Nurse nurse;
+    private List<Patient> patients;
+    private ListView lv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,35 +73,34 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
             }
         });
     }
-    private class InsertInChargePatient extends SafeAsyncTask<String> {
+    private class InsertInChargePatient extends AsyncTask<Void, Void, String> {
+        String answer;
         @Override
-        public String call() throws Exception {
+        protected String doInBackground(Void... params) {
 
-            String url="http://117.17.142.133:8080/nurse/insert-incharge-patient";
-            String query="nurseId="+nurse.getnurseId()+"&patientCode="+checkedPatient;
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
+            requestBody = new FormBody.Builder().add("nurseId",nurse.getnurseId()).add("patientCode",checkedPatient).build();
+
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/insert-incharge-patient")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                answer = response.body().string();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            String result=new GsonBuilder().create().fromJson(request.bufferedReader(),String.class);
-            return "good";
+            Log.d("answer", ""+answer);
+            return answer;
         }
+
         @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(String result) throws Exception {
-            super.onSuccess(result);
-            if("good".equals(result)){
+        protected void onPostExecute(String s) {
+            if("good".equals(s)){
                 Toast.makeText(getApplicationContext(),nurse.getnurseId()+"님에게 담당환자를 부여하였습니다.",Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -129,6 +134,7 @@ public class AdminInChargePatientSelectActivity extends ListActivity {
             return convertView;
         }
     }
+
     public class FatchAdminPatientListAsyncTask extends SafeAsyncTask<List<Patient>> {
 
         @Override

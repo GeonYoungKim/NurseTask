@@ -25,25 +25,21 @@ import skuniv.ac.kr.nursetask.Core.domain.SingleTon;
 
 public class UploadFile extends AsyncTask<String, String, String> {
 
-    Context context; // 생성자 호출 시
-    ProgressDialog mProgressDialog; // 진행 상태 다이얼로그
-    String fileName; // 파일 위치
-
-    HttpURLConnection conn = null; // 네트워크 연결 객체
-    DataOutputStream dos = null; // 서버 전송 시 데이터 작성한 뒤 전송
-
-    String lineEnd = "\r\n"; // 구분자
-    String twoHyphens = "--";
-    String boundary = "*****";
-
-    int bytesRead, bytesAvailable, bufferSize;
-    byte[] buffer;
-    int maxBufferSize = 1024;
-    File sourceFile;
-    int serverResponseCode;
-    String TAG = "FileUpload";
-
-    public AsyncResponse delegate =null;
+    private Context context; // 생성자 호출 시
+    private ProgressDialog mProgressDialog; // 진행 상태 다이얼로그
+    private String fileName; // 파일 위치
+    private String lineEnd = "\r\n"; // 구분자
+    private String twoHyphens = "--";
+    private String boundary = "*****";
+    private String TAG = "FileUpload";
+    private HttpURLConnection conn = null; // 네트워크 연결 객체
+    private DataOutputStream dos = null; // 서버 전송 시 데이터 작성한 뒤 전송
+    private int bytesRead, bytesAvailable, bufferSize;
+    private byte[] buffer;
+    private int maxBufferSize = 1024;
+    private File sourceFile;
+    private int serverResponseCode;
+    private AsyncResponse delegate =null;
 
     public UploadFile(Context context, AsyncResponse asyncResponse) {
         this.context = context;
@@ -138,18 +134,6 @@ public class UploadFile extends AsyncTask<String, String, String> {
 
                 Log.i(TAG, "[UploadImageToServer] HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
 
-                if (serverResponseCode == 200) {
-//                    mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                        @Override
-//                        public void onDismiss(DialogInterface dialog) {
-//                            Log.d(TAG, "onDismissed() ");
-//
-//
-//                            //task.cancel(false);
-//                        }
-//                    });
-                    System.out.println("responseCode 200!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                }
                 // 결과 확인
                 BufferedReader rd = null;
 

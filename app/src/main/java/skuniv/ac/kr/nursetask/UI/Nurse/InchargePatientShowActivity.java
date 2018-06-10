@@ -29,9 +29,9 @@ import skuniv.ac.kr.nursetask.UI.Admin.AdminInChargePatientSelectActivity;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminListArrayAdapter;
 
 public class InchargePatientShowActivity extends ListActivity {
-    String nurseId;
-    ListView lv;
-    List<Patient> patients;
+    private String nurseId;
+    private ListView lv;
+    private List<Patient> patients;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

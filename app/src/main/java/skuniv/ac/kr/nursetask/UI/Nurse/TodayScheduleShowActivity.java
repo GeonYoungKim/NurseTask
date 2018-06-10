@@ -31,13 +31,15 @@ import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 
 public class TodayScheduleShowActivity extends ListActivity {
-    String nurseId;
-    ListView lv;
-    HashMap<String,String> todaySchduleMap;
-    String[] todaySchduleStr;
-    TreeMap<String,String> treeMap;
-    Iterator<String> iterator;
-    List<String> treeMapKeyList;
+
+    private String nurseId;
+    private ListView lv;
+    private HashMap<String,String> todaySchduleMap;
+    private String[] todaySchduleStr;
+    private TreeMap<String,String> treeMap;
+    private Iterator<String> iterator;
+    private List<String> treeMapKeyList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

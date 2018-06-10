@@ -25,8 +25,8 @@ public class ChoiceRoomActivity extends AppCompatActivity implements NavigationV
 
     private DrawerLayout drawerLayout;
     private MainTabsAdapter mainTabsAdapter;
-    NavigationView navigationView;
-    String nurseId;
+    private NavigationView navigationView;
+    private String nurseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,7 +1,6 @@
 package skuniv.ac.kr.nursetask.UI.Nurse;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
@@ -10,23 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
-import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
-import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by gunyoungkim on 2017-09-04.
@@ -35,6 +25,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class NurseListFragment extends ListFragment {
     private ListArrayAdapter nurseListArrayAdapter;
 
+    private static NurseListFragment nurseListFragment = null;
+    public static synchronized NurseListFragment getInstance() {
+        if (nurseListFragment == null) {
+            nurseListFragment = new NurseListFragment();
+        }
+        return nurseListFragment;
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -47,7 +44,7 @@ public class NurseListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        GetSet.setNurseListFragment(this);
+        getInstance();
         return inflater.inflate(R.layout.fragment_nurse_list,container,false);
     }
     @Override

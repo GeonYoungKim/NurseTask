@@ -25,6 +25,13 @@ import skuniv.ac.kr.nursetask.R;
 
 public class AdminPatientsListFragment extends ListFragment {
 
+    private static AdminPatientsListFragment adminPatientsListFragment = null;
+    public static synchronized AdminPatientsListFragment getInstance() {
+        if (adminPatientsListFragment == null) {
+            adminPatientsListFragment = new AdminPatientsListFragment();
+        }
+        return adminPatientsListFragment;
+    }
 
     private AdminPatientListArrayAdapter adminPatientListArrayAdapter;
 
@@ -42,7 +49,7 @@ public class AdminPatientsListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        GetSet.setAdminPatientsListFragment(this);
+        getInstance();
 
         return inflater.inflate(R.layout.fragment_admin_patients_list,container,false);
     }

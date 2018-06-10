@@ -1,15 +1,10 @@
 package skuniv.ac.kr.nursetask.UI.Nurse;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,34 +12,34 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.github.kevinsawicki.http.HttpRequest;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
-import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.Core.provider.RoomProvider;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminRoomsListArrayAdapter;
-import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 
 /**
  * Created by gunyoungkim on 2017-09-04.
  */
 
 public class ChatRoomListFragment extends ListFragment {
-    String receiveMessage;
-    public AdminRoomsListArrayAdapter adminRoomsListArrayAdapter;
-    Map<Integer,Room> roomMap;
-    int roomNo;
-    public List<Room> Rooms;
+    private AdminRoomsListArrayAdapter adminRoomsListArrayAdapter;
+    private Map<Integer,Room> roomMap;
+    private int roomNo;
+    private List<Room> Rooms;
+    private ListArrayAdapter listArrayAdapter;
+
+    private static ChatRoomListFragment chatRoomListFragment = null;
+    public static synchronized ChatRoomListFragment getInstance() {
+        if (chatRoomListFragment == null) {
+            chatRoomListFragment = new ChatRoomListFragment();
+        }
+        return chatRoomListFragment;
+    }
 
     public AdminRoomsListArrayAdapter getAdminRoomsListArrayAdapter() {
         return adminRoomsListArrayAdapter;
@@ -58,6 +53,7 @@ public class ChatRoomListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("create adapter","adapter");
+        listArrayAdapter=new ListArrayAdapter(getActivity());
         adminRoomsListArrayAdapter=new AdminRoomsListArrayAdapter(getActivity());
 
 
@@ -68,7 +64,7 @@ public class ChatRoomListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        GetSet.setChatRoomListFragment(this);
+        getInstance();
         return inflater.inflate(R.layout.fragment_chatroom_list,container,false);
     }
     @Override
@@ -96,7 +92,7 @@ public class ChatRoomListFragment extends ListFragment {
 
         @Override
         public List<Room> call() throws Exception {
-            RoomProvider roomProvider=new RoomProvider(ListArrayAdapter.ownNurse.getnurseId());
+            RoomProvider roomProvider=new RoomProvider(listArrayAdapter.getOwnNurse().getnurseId());
             Rooms=roomProvider.FatchRoomList();
             return Rooms;
         }

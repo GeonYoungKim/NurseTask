@@ -38,10 +38,18 @@ import skuniv.ac.kr.nursetask.UI.Nurse.ChatRoomListFragment;
 
 public class AdminChatRoomListFragment extends ListFragment {
     private AdminRoomsListArrayAdapter adminRoomsListArrayAdapter;
-    Map<Integer, Room> roomMap;
-    int roomNo;
-    String receiveMessage;
-    List<Room> Rooms;
+    private Map<Integer, Room> roomMap;
+    private int roomNo;
+    private List<Room> Rooms;
+    private AdminListArrayAdapter adminListArrayAdapter;
+    private static AdminChatRoomListFragment adminChatRoomListFragment = null;
+
+    public static synchronized AdminChatRoomListFragment getInstance() {
+        if (adminChatRoomListFragment == null) {
+            adminChatRoomListFragment = new AdminChatRoomListFragment();
+        }
+        return adminChatRoomListFragment;
+    }
 
     public AdminRoomsListArrayAdapter getAdminRoomsListArrayAdapter() {
         return adminRoomsListArrayAdapter;
@@ -55,6 +63,7 @@ public class AdminChatRoomListFragment extends ListFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d("create adapter", "adapter");
+        adminListArrayAdapter=new AdminListArrayAdapter(getActivity());
         adminRoomsListArrayAdapter = new AdminRoomsListArrayAdapter(getActivity());
     }
 
@@ -64,7 +73,7 @@ public class AdminChatRoomListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        GetSet.setAdminChatRoomListFragment(this);
+        getInstance();
         return inflater.inflate(R.layout.fragment_chatroom_list, container, false);
     }
 
@@ -94,7 +103,7 @@ public class AdminChatRoomListFragment extends ListFragment {
     public class FatchAdminRoomListAsyncTask extends SafeAsyncTask<List<Room>> {
         @Override
         public List<Room> call() throws Exception {
-            RoomProvider roomProvider = new RoomProvider(AdminListArrayAdapter.ownNurse.getnurseId());
+            RoomProvider roomProvider = new RoomProvider(adminListArrayAdapter.getOwnNurse().getnurseId());
             Rooms = roomProvider.FatchRoomList();
             return Rooms;
         }

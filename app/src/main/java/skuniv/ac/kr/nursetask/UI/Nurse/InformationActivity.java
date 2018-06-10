@@ -12,7 +12,7 @@ import skuniv.ac.kr.nursetask.R;
 
 public class InformationActivity extends AppCompatActivity {
 
-    Nurse nurse;
+    private Nurse nurse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

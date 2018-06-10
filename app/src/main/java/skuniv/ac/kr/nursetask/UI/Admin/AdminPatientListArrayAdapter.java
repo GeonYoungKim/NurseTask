@@ -35,12 +35,20 @@ import skuniv.ac.kr.nursetask.R;
  */
 
 public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
-    public AdminPatientsListFragment adminPatientsListFragment;
-    String imageUrl = "http://117.17.142.133:8080/img/";
-    Bitmap bmImg;
-    String nurseListToken="";
-    Patient fcmPatinet;
-    public static Nurse nurse;
+    private AdminPatientsListFragment adminPatientsListFragment;
+    private String imageUrl = "http://117.17.142.133:8080/img/";
+    private Bitmap bmImg;
+    private String nurseListToken="";
+    private Patient fcmPatinet;
+    private Nurse nurse;
+
+    public Nurse getNurse() {
+        return nurse;
+    }
+
+    public void setNurse(Nurse nurse) {
+        this.nurse = nurse;
+    }
 
     private LayoutInflater layoutInflater;
     public AdminPatientListArrayAdapter(@NonNull Context context) {
@@ -120,7 +128,7 @@ public class AdminPatientListArrayAdapter extends ArrayAdapter<Patient> {
         @Override
         protected void onSuccess(String result) throws Exception {
             super.onSuccess(result);
-            adminPatientsListFragment=GetSet.getAdminPatientsListFragment();
+            adminPatientsListFragment=AdminPatientsListFragment.getInstance();
             adminPatientsListFragment.realTimeUpdate();
             new FatchNurseListAsyncTask().execute();
 

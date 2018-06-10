@@ -3,11 +3,14 @@ package skuniv.ac.kr.nursetask.Core.domain;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
+
 /**
  * Created by gunyoungkim on 2017-08-30.
  */
 
 public class Nurse implements Parcelable {
+
     private String nurseId;
     private String password;
     private String name;
@@ -17,6 +20,15 @@ public class Nurse implements Parcelable {
     private String image;
     private String todaySchedule;
     private String token;
+
+
+    private static Nurse nurse = null;
+    public static synchronized Nurse getInstance() {
+        if (nurse == null) {
+            nurse = new Nurse(Parcel.obtain());
+        }
+        return nurse;
+    }
 
     public String getnurseId() {
         return nurseId;

@@ -25,12 +25,11 @@ import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
 
 public class LongTermScheduleShowActivity extends ListActivity {
-    String nurseId;
-    TextView startDay;
-    TextView endDay;
-    Button contentBtn;
-    ListView lv;
-    List<LongTermScheduleVo> longTermScheduleVoList;
+
+    private String nurseId;
+
+    private ListView lv;
+    private List<LongTermScheduleVo> longTermScheduleVoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +41,6 @@ public class LongTermScheduleShowActivity extends ListActivity {
 
         lv= (ListView) findViewById(android.R.id.list);
 
-        startDay=(TextView)findViewById(R.id.long_term_schedule_startday);
-        endDay=(TextView)findViewById(R.id.long_term_schedule_endday);
-
-        contentBtn=(Button)findViewById(R.id.long_term_schedule_contentBtn);
         findViewById(R.id.long_term_schedule_show_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

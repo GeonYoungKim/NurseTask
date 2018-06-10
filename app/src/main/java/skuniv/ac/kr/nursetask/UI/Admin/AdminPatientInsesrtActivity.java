@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -32,30 +33,39 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Nurse.AsyncResponse;
+import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.MemberShipActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.UploadFile;
 
 public class AdminPatientInsesrtActivity extends AppCompatActivity {
+
     private static final int MY_PERMISSION_CAMERA=1111;
-    private static final int REQUEST_TAKE_PHOTO=2222;
     private static final int REQUEST_TAKE_ALBUM = 3333;
     private static final int REQUEST_IMAGE_CROP=4444;
-    EditText[] patientInsertContents;
-    String[] getPatientInsertContents;
-    String imageFileName;
+
+    private EditText[] patientInsertContents;
+    private String[] getPatientInsertContents;
+    private String imageFileName;
     private String imgPath="";
-    ImageView imageView;
-    Uri photoUri, albumUri;
-    String nurseListToken="";
-    Patient insertPatient;
+    private String nurseListToken="";
+    private ImageView imageView;
+    private Uri photoUri, albumUri;
+    private Patient insertPatient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,39 +99,42 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
-    private class InsertPatient extends SafeAsyncTask<Patient> {
-        @Override
-        public Patient call() throws Exception {
 
-            String url="http://117.17.142.133:8080/nurse/insert-patient";
-            String query="patientCode="+getPatientInsertContents[0]+"&name="+getPatientInsertContents[1]+"&birth="+getPatientInsertContents[2]+
-                    "&sex="+getPatientInsertContents[3]+"&disease="+getPatientInsertContents[4]+"&period="+getPatientInsertContents[5]+"&note="+getPatientInsertContents[6]
-                    +"&room="+getPatientInsertContents[7]+"&image="+imageFileName;
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+
+    private class InsertPatient extends AsyncTask<Void, Void, Patient> {
+        Patient answer;
+        @Override
+        protected Patient doInBackground(Void... params) {
+
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
+
+            requestBody = new FormBody.Builder().add("patientCode",getPatientInsertContents[0]).add("name",getPatientInsertContents[1])
+                    .add("birth",getPatientInsertContents[2]).add("sex",getPatientInsertContents[3])
+                    .add("disease",getPatientInsertContents[4]).add("period",getPatientInsertContents[5])
+                    .add("note",getPatientInsertContents[6]).add("room",getPatientInsertContents[7])
+                    .add("image",imageFileName).build();
+
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/insert-patient")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                Gson gson=new Gson();
+                answer = gson.fromJson(response.body().toString(),Patient.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            JSONResultFatchInsertPatient result=new GsonBuilder().create().fromJson(request.bufferedReader(),JSONResultFatchInsertPatient.class);
-            Patient patient=result.getData();
-            return patient;
+            Log.d("answer", ""+answer);
+            return answer;
         }
+
         @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(Patient patient) throws Exception {
-            super.onSuccess(patient);
+        protected void onPostExecute(Patient patient) {
             if(patient==null){
                 Toast.makeText(getApplicationContext(),"환자추가에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
@@ -135,7 +148,6 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
             }
         }
     }
-    private class JSONResultFatchInsertPatient extends JsonResult<Patient> {}
 
     private void checkPremission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){

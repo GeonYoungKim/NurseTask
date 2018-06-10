@@ -3,6 +3,7 @@ package skuniv.ac.kr.nursetask.UI.Nurse;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,43 +13,46 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.Patient;
 import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminChatRoomListFragment;
-import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
+import skuniv.ac.kr.nursetask.UI.Admin.UpdateNurseRoomToken;
 
 /**
  * Created by gunyoungkim on 2017-10-09.
  */
 
 public class InviteActivity extends ListActivity {
-    public ChatRoomListFragment chatRoomListFragment;
-    public AdminChatRoomListFragment adminChatRoomListFragment;
-    Map<Nurse,CheckBox> nursesCheckMap;
-    String checkedNurse;
-    String checkedNurseId;
-    int roomNo;
-    List<Nurse> nurses;
-    ListView lv;
-    String roomName;
-    String[] roomNames;
-    boolean exist;
-    int count;
-    Intent intent;
+    private ChatRoomListFragment chatRoomListFragment;
+    private AdminChatRoomListFragment adminChatRoomListFragment;
+    private Map<Nurse,CheckBox> nursesCheckMap;
+    private String checkedNurse,checkedNurseId,roomName;
+    private int roomNo,count;
+    private List<Nurse> nurses;
+    private ListView lv;
+    private String[] roomNames;
+    private boolean exist;
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,34 +88,40 @@ public class InviteActivity extends ListActivity {
             }
         });
     }
-    private class UpdateRoom extends SafeAsyncTask<String> {
+
+
+    public class UpdateRoom extends AsyncTask<Void, Void, String> {
+        private String answer;
+
         @Override
-        public String call() throws Exception {
-            String url="http://117.17.142.133:8080/nurse/update-room";
-            String query="roomNo="+roomNo+"&roomName="+checkedNurse+"&count="+count+"&strNurseId="+checkedNurseId;
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+        protected String doInBackground(Void... params) {
+
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
+
+            requestBody = new FormBody.Builder().add("roomNo",String.valueOf(roomNo)).add("roomName",checkedNurse)
+                    .add("count",String.valueOf(count)).add("strNurseId",checkedNurseId)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/update-room")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                answer = response.body().toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            return null;
+            Log.d("answer", ""+answer);
+            return answer;
         }
-        @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(String str) throws Exception {
-            super.onSuccess(str);
-            chatRoomListFragment= GetSet.getChatRoomListFragment();
-            adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
+
+        protected void onPostExecute(Patient patient) {
+            chatRoomListFragment= ChatRoomListFragment.getInstance();
+            adminChatRoomListFragment=AdminChatRoomListFragment.getInstance();
             if(chatRoomListFragment!=null){
                 chatRoomListFragment.realTimeUpdate();
             }
@@ -125,8 +135,10 @@ public class InviteActivity extends ListActivity {
 
             System.out.println("----------------------"+ChatActivity.roomsId);
             finish();
+
         }
     }
+
     private class getRoom extends SafeAsyncTask<Room> {
         @Override
         public Room call() throws Exception {

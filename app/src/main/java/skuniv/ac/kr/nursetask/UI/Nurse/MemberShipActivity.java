@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
@@ -32,15 +34,21 @@ import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
+import skuniv.ac.kr.nursetask.Core.domain.Patient;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
 import skuniv.ac.kr.nursetask.R;
+import skuniv.ac.kr.nursetask.UI.Admin.UpdateNurseRoomToken;
 
 public class MemberShipActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSION_CAMERA=1111;
-    private static final int REQUEST_TAKE_PHOTO=2222;
     private static final int REQUEST_TAKE_ALBUM = 3333;
     private static final int REQUEST_IMAGE_CROP=4444;
     String imageFileName;
@@ -80,47 +88,47 @@ public class MemberShipActivity extends AppCompatActivity {
         });
     }
 
-    private class InsertNurse extends SafeAsyncTask<Nurse> {
-        @Override
-        public Nurse call() throws Exception {
+    public class InsertNurse extends AsyncTask<Void, Void, Nurse> {
+        Nurse answer;
 
-            String url="http://117.17.142.133:8080/nurse/insert-nurse";
-            String query="id="+getMemberShipContents[0]+"&password="+getMemberShipContents[1]+"&name="+getMemberShipContents[2]+
-                    "&birth="+getMemberShipContents[3]+"&phone="+getMemberShipContents[4]+"&address="+getMemberShipContents[5]+"&image="+imageFileName;
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+        @Override
+        protected Nurse doInBackground(Void... params) {
+
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
+
+            requestBody = new FormBody.Builder().add("id",getMemberShipContents[0]).add("password",getMemberShipContents[1])
+                    .add("name",getMemberShipContents[2]).add("birth",getMemberShipContents[3])
+                    .add("phone",getMemberShipContents[4]).add("address",getMemberShipContents[5])
+                    .add("image",imageFileName)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/insert-nurse")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                Gson gson=new Gson();
+                answer = gson.fromJson(response.body().toString(),Nurse.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            MemberShipActivity.JSONResultFatchInsertNurse result=new GsonBuilder().create().fromJson(request.bufferedReader(),MemberShipActivity.JSONResultFatchInsertNurse.class);
-            Nurse nurse=result.getData();
-            return nurse;
+            Log.d("answer", ""+answer);
+            return answer;
         }
-        @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(Nurse nurse) throws Exception {
-            super.onSuccess(nurse);
+
+        protected void onPostExecute(Nurse nurse) {
             if(nurse==null){
                 Toast.makeText(getApplicationContext(),"회원가입에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getApplicationContext(),"회원가입에 성공하셨습니다."+nurse.getnurseId()+"님",Toast.LENGTH_SHORT).show();
                 finish();
             }
-
         }
     }
-
-    private class JSONResultFatchInsertNurse extends JsonResult<Nurse> {}
 
     private void checkPremission(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){

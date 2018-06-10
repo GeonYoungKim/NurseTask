@@ -27,8 +27,17 @@ import skuniv.ac.kr.nursetask.UI.Nurse.NurseListFragment;
  */
 
 public class AdminNursesListFragment extends ListFragment {
+
     private AdminListArrayAdapter nurseListArrayAdapter;
 
+
+    private static AdminNursesListFragment adminNursesListFragment = null;
+    public static synchronized AdminNursesListFragment getInstance() {
+        if (adminNursesListFragment == null) {
+            adminNursesListFragment = new AdminNursesListFragment();
+        }
+        return adminNursesListFragment;
+    }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -41,7 +50,7 @@ public class AdminNursesListFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        GetSet.setAdminNursesListFragment(this);
+        getInstance();
         return inflater.inflate(R.layout.fragment_nurse_list,container,false);
     }
     @Override

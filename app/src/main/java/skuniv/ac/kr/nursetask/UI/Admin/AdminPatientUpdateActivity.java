@@ -2,6 +2,7 @@ package skuniv.ac.kr.nursetask.UI.Admin;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +14,18 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.List;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
 import skuniv.ac.kr.nursetask.Core.domain.Patient;
+import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.Fcm;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
@@ -25,11 +33,13 @@ import skuniv.ac.kr.nursetask.Core.provider.NurseProvider;
 import skuniv.ac.kr.nursetask.R;
 
 public class AdminPatientUpdateActivity extends AppCompatActivity {
-    public AdminPatientsListFragment adminPatientsListFragment;
-    Patient patient;
-    EditText[] patientUpdateContents;
-    String[] getpatientUpdateContents;
-    String nurseListToken="";
+
+    private AdminPatientsListFragment adminPatientsListFragment;
+    private Patient patient;
+    private EditText[] patientUpdateContents;
+    private String[] getpatientUpdateContents;
+    private String nurseListToken="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,44 +74,43 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
             }
         });
     }
-    private class UpdatePatient extends SafeAsyncTask<Patient> {
+
+    private class UpdatePatient extends AsyncTask<Void, Void, Patient> {
+        Patient answer;
         @Override
-        public Patient call() throws Exception {
+        protected Patient doInBackground(Void... params) {
 
-            String url="http://117.17.142.133:8080/nurse/update-patient";
-            String query="patientCode="+patient.getPatientCode()+"&name="+getpatientUpdateContents[0]+"&birth="+getpatientUpdateContents[1]+
-                    "&sex="+getpatientUpdateContents[2]+"&disease="+getpatientUpdateContents[3]+"&period="+getpatientUpdateContents[4]+"&note="+getpatientUpdateContents[5]
-                    +"&room="+getpatientUpdateContents[6];
+            OkHttpClient client = new OkHttpClient();
+            Response response;
+            RequestBody requestBody = null;
 
-            HttpRequest request=HttpRequest.post(url);
-            request.accept( HttpRequest.CONTENT_TYPE_JSON );
-            request.connectTimeout( 1000 );
-            request.readTimeout( 3000 );
-            request.send(query);
-            int responseCode = request.code();
-            if ( responseCode != HttpURLConnection.HTTP_OK  ) {
-                    /* 에러 처리 */
-                System.out.println("---------------------ERROR");
-                return null;
+            requestBody = new FormBody.Builder().add("patientCode",patient.getPatientCode()).add("name",getpatientUpdateContents[0])
+                    .add("birth",getpatientUpdateContents[1]).add("sex",getpatientUpdateContents[2])
+                    .add("disease",getpatientUpdateContents[3]).add("period",getpatientUpdateContents[4])
+                    .add("note",getpatientUpdateContents[5]).add("room",getpatientUpdateContents[6]).build();
+
+            Request request = new Request.Builder()
+                    .url("http://117.17.142.133:8080/nurse/update-patient")
+                    .post(requestBody)
+                    .build();
+            try {
+                response = client.newCall(request).execute();
+                Gson gson=new Gson();
+                answer = gson.fromJson(response.body().toString(),Patient.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            JSONResultFatchUpdatePatient result=new GsonBuilder().create().fromJson(request.bufferedReader(),JSONResultFatchUpdatePatient.class);
-            Patient patient=result.getData();
-            return patient;
+            Log.d("answer", ""+answer);
+            return answer;
         }
-        @Override
-        protected void onException(Exception e) throws RuntimeException {
-            super.onException(e);
-            System.out.println("----------->exception: "+e);
-        }
-        @Override
-        protected void onSuccess(Patient patient) throws Exception {
-            super.onSuccess(patient);
 
+        protected void onPostExecute(Patient patient) {
             if(patient==null){
                 Toast.makeText(getApplicationContext(),"환자수정에 실패하셨습니다.",Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(getApplicationContext(),"환자수정에 성공하셨습니다.",Toast.LENGTH_SHORT).show();
-                adminPatientsListFragment=GetSet.getAdminPatientsListFragment();
+                adminPatientsListFragment=AdminPatientsListFragment.getInstance();
                 adminPatientsListFragment.realTimeUpdate();
 
                 new FatchNurseListAsyncTask().execute();
@@ -109,7 +118,7 @@ public class AdminPatientUpdateActivity extends AppCompatActivity {
             }
         }
     }
-    private class JSONResultFatchUpdatePatient extends JsonResult<Patient> {}
+
 
     public class FatchNurseListAsyncTask extends SafeAsyncTask<List<Nurse>> {
         @Override

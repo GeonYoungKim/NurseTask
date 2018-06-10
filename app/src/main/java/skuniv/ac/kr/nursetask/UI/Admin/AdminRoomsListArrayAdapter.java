@@ -20,6 +20,7 @@ import skuniv.ac.kr.nursetask.R;
  */
 
 public class AdminRoomsListArrayAdapter extends ArrayAdapter<Room> {
+
     private LayoutInflater layoutInflater;
 
     public AdminRoomsListArrayAdapter(@NonNull Context context) {

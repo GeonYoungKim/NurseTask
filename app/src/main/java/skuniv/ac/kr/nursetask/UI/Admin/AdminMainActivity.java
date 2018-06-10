@@ -29,8 +29,8 @@ public class AdminMainActivity extends AppCompatActivity implements NavigationVi
 
     private DrawerLayout drawerLayout;
     private AdminMainTabsAdapter mainTabsAdapter;
-    NavigationView navigationView;
-    String nurseId;
+    private NavigationView navigationView;
+    private String nurseId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -9,11 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -23,7 +20,6 @@ import com.google.gson.GsonBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,19 +27,14 @@ import java.util.Calendar;
 import java.util.List;
 
 import skuniv.ac.kr.nursetask.Core.domain.Nurse;
-import skuniv.ac.kr.nursetask.Core.domain.Room;
 import skuniv.ac.kr.nursetask.Core.network.SafeAsyncTask;
 import skuniv.ac.kr.nursetask.Core.provider.JsonResult;
-import skuniv.ac.kr.nursetask.R;
 import skuniv.ac.kr.nursetask.UI.Admin.AdminChatRoomListFragment;
 
 import skuniv.ac.kr.nursetask.UI.Admin.AdminNursesListFragment;
-import skuniv.ac.kr.nursetask.UI.Admin.AdminRoomsListArrayAdapter;
 import skuniv.ac.kr.nursetask.UI.Admin.AlarmNotificationReceiver;
-import skuniv.ac.kr.nursetask.UI.Admin.GetSet;
 import skuniv.ac.kr.nursetask.UI.Nurse.ChatActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.ChatRoomListFragment;
-import skuniv.ac.kr.nursetask.UI.Nurse.InviteActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.MainActivity;
 import skuniv.ac.kr.nursetask.UI.Nurse.NurseListFragment;
 
@@ -78,9 +69,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
         if(remoteMessage.getNotification()!=null){
             Log.d(TAG,"Message body:"+remoteMessage.getNotification().getBody());
-            chatActivity= GetSet.getChatActivity();
-            adminChatRoomListFragment=GetSet.getAdminChatRoomListFragment();
-            chatRoomListFragment=GetSet.getChatRoomListFragment();
+            chatActivity= ChatActivity.getInstance();
+            adminChatRoomListFragment=AdminChatRoomListFragment.getInstance();
+            chatRoomListFragment=ChatRoomListFragment.getInstance();
 
             String msg=remoteMessage.getNotification().getBody();
             try {
@@ -114,18 +105,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }else{
                     sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
                 }
-                adminNursesListFragment=GetSet.getAdminNursesListFragment();
-                nurseListFragment=GetSet.getNurseListFragment();
-                try{
-                    nurseListFragment.realTimeUpdate();
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
-                try{
-                    adminNursesListFragment.realTimeUpdate();
-                }catch (NullPointerException e){
-                    e.printStackTrace();
-                }
+                adminNursesListFragment=AdminNursesListFragment.getInstance();
+                nurseListFragment=NurseListFragment.getInstance();
+                nurseListFragment.realTimeUpdate();
+                adminNursesListFragment.realTimeUpdate();
+
             }else if("incharge_patient_update".equals(msg)) {
                 sendNotification(remoteMessage.getNotification().getTitle(),"incharge_patient_update");
             }else if("confirm_long_schedule".equals(msg)){
@@ -213,15 +197,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String[] alarm_schedule_item=nurse.getTodaySchedule().split(",");
             Arrays.sort(alarm_schedule_item, String.CASE_INSENSITIVE_ORDER);
 
-            AlarmNotificationReceiver.i=0;
-            AlarmNotificationReceiver.content=new ArrayList<String>();
+            AlarmNotificationReceiver.getInstance().setI(0);
             AlarmManager manager=(AlarmManager)getSystemService(Context.ALARM_SERVICE);
             alarmintent=new Intent(getApplicationContext(),AlarmNotificationReceiver.class);
 
             for(int i=0;i<alarm_schedule_item.length;i++){
                 String[] time_and_content=alarm_schedule_item[i].split("-");
 
-                AlarmNotificationReceiver.content.add(time_and_content[1]);
+                AlarmNotificationReceiver.getInstance().getContent().add(time_and_content[1]);
 
                 String[] hour_and_minute=time_and_content[0].split(":");
 
@@ -276,15 +259,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         @Override
         protected void onSuccess(String room) throws Exception {
             super.onSuccess(room);
-            try{
-                adminChatRoomListFragment.realTimeUpdate();
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }try{
-                chatRoomListFragment.realTimeUpdate();
-            }catch (NullPointerException e){
-                e.printStackTrace();
-            }
+            adminChatRoomListFragment=AdminChatRoomListFragment.getInstance();
+            adminChatRoomListFragment.realTimeUpdate();
+            chatRoomListFragment=ChatRoomListFragment.getInstance();
+            chatRoomListFragment.realTimeUpdate();
+
         }
     }
 }
