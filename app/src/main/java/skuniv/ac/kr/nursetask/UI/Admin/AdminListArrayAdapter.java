@@ -146,7 +146,7 @@ public class AdminListArrayAdapter extends ArrayAdapter<Nurse> {
             try {
                 response = client.newCall(request).execute();
                 Gson gson=new Gson();
-                answer = gson.fromJson(response.body().toString(),Room.class);
+                answer = gson.fromJson(response.body().string(),Room.class);
 
             } catch (IOException e) {
                 e.printStackTrace();

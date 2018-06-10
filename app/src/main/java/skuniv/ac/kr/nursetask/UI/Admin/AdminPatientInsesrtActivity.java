@@ -124,7 +124,7 @@ public class AdminPatientInsesrtActivity extends AppCompatActivity {
             try {
                 response = client.newCall(request).execute();
                 Gson gson=new Gson();
-                answer = gson.fromJson(response.body().toString(),Patient.class);
+                answer = gson.fromJson(response.body().string(),Patient.class);
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -110,7 +110,7 @@ public class InviteActivity extends ListActivity {
                     .build();
             try {
                 response = client.newCall(request).execute();
-                answer = response.body().toString();
+                answer = response.body().string();
 
             } catch (IOException e) {
                 e.printStackTrace();

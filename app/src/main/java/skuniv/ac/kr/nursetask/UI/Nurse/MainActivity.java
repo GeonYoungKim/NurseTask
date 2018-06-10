@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 response = client.newCall(request).execute();
                 Gson gson=new Gson();
-                answer = gson.fromJson(response.body().toString(),Nurse.class);
+                answer = gson.fromJson(response.body().string(),Nurse.class);
 
             } catch (IOException e) {
                 e.printStackTrace();
